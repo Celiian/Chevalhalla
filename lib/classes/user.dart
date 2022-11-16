@@ -3,18 +3,17 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class User {
-  late var name= "";
-  var birthdate= "";
-  var level= "";
-  var mail= "";
-  var profilePicture= "";
-  final themeColor= "blue";
-  var status= "";
-  var linkFFE= "";
- var password= "";
-  
-  
-  decodeJson(json){
+  static var name = "";
+  static var birthdate = "";
+  static var level = "";
+  static var mail = "";
+  static var profilePicture = "";
+  static var themeColor = "blue";
+  static var status = "";
+  static var linkFFE = "";
+  static var password = "";
+
+  decodeJson(json) {
     name = json?["name"];
     mail = json?["mail"];
     password = json?["password"];
@@ -23,9 +22,5 @@ class User {
     //profilePicture = json["profilePicture"];
     //status = json["status"];
     //linkFFE = json["linkFFE"];
-
   }
-  
-  
-  
 }

@@ -38,7 +38,6 @@ class MongoDatabase {
 
   getUser(mail, password) async {
     var user = await collectionUtilisateurs?.findOne(where.eq("mail", mail).eq("password", password));
-    print(user);
     return user;
   }
 
