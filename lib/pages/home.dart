@@ -14,22 +14,56 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
+  final List _children = [];
+
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+      if (_currentIndex == 0) {
+        //Home page navigator
+      } else if (_currentIndex == 1) {
+        //Planning page navigator
+      }
+      else if (_currentIndex == 2) {
+        //Profile page navigator
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Form page"),
-        ),
-        body: Center(
-            child: Column(
-          children: [
-            TextButton(
-              onPressed: () {
-              },
-              child: const Text("Home Page"),
-            )
-          ],
-        )));
+      appBar: AppBar(
+        title: const Text("Form page"),
+      ),
+      body: Center(
+          child: Column(
+        children: [
+          TextButton(
+            onPressed: () {},
+            child: const Text("Home Page"),
+          )
+        ],
+      )),
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: onTabTapped,
+        currentIndex: _currentIndex, // new
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_month),
+            label: 'Planning',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          )
+        ],
+      ),
+    );
   }
 }
