@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
+
 import 'mongodb.dart';
 import 'pages/home.dart';
 
@@ -13,12 +15,22 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Home',
-      theme: ThemeData(
+    return AdaptiveTheme(
+      light: ThemeData(
+        brightness: Brightness.light,
         primarySwatch: Colors.orange,
       ),
-      home: const MyHomePage(title: 'Chevalhalla'),
+      dark: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.orange,
+      ),
+      initial: AdaptiveThemeMode.dark,
+      builder: (theme, darkTheme) => MaterialApp(
+        title: 'home',
+        theme: theme,
+        darkTheme: darkTheme,
+        home: MyHomePage(title: 'Chevalhalla',),
+      ),
     );
   }
 }
