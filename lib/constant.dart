@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 const MONGO_URL = "mongodb+srv://admin:admin@cluster0.oiimdax.mongodb.net/Chevalhalla?retryWrites=true&w=majority";
 const COLLECTION_UTILISATEURS="utilisateurs";
 const COLLECTION_CHEVAUX="chevaux";

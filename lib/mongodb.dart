@@ -33,4 +33,17 @@ class MongoDatabase {
       print("connected");
     }
   }
+
+  getUser(name) async {
+     var user = (await collectionUtilisateurs?.findOne(where.eq('name', name)));
+    return getEventUser(user);
+  }
+  
+  getEventUser(user) async {
+    var cours = await collectionCours?.find(where.eq("_utilisateur_id", user["_id"])).toList();
+
+    return cours;
+  }
+
+
 }

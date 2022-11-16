@@ -1,3 +1,4 @@
+import 'package:chevalhalla/pages/planning.dart';
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -10,10 +11,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   void _incrementCounter() {
-    setState(() {
-    });
+    Navigator.of(context)
+        .pushNamed(Planning.tag)
+        .then((_) => setState(() {}));
   }
 
   @override
