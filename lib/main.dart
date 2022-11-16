@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'mongodb.dart';
 import 'pages/home.dart';
+import 'pages/register.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Home',
+      routes: {Register.tag: (context) => const Register()},
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),

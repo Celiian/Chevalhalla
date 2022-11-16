@@ -29,8 +29,15 @@ class MongoDatabase {
     collectionParticipations = db.collection(COLLECTION_PARTICIPATIONS);
     collectionSoirees = db.collection(COLLECTION_SOIREES);
 
-    if (await collectionUtilisateurs?.find().toList() != null){
+    if (await collectionUtilisateurs?.find().toList() != null) {
       print("connected");
     }
   }
+
+  static CreateUser(User) async {
+    await collectionUtilisateurs?.insertOne(
+        User.toJson()
+    );
+  }
+
 }
