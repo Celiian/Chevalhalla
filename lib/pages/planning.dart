@@ -1,4 +1,5 @@
 import 'package:chevalhalla/mongodb.dart';
+import 'package:chevalhalla/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -27,15 +28,15 @@ class _PlanningState extends State<Planning> {
 
   late var cours;
 
+  int _currentIndex = 1;
+
   @override
   void initState() {
     super.initState();
 
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
-
   }
-
 
   @override
   void dispose() {
@@ -47,9 +48,7 @@ class _PlanningState extends State<Planning> {
     return events[day] ?? [];
   }
 
-  getCours() async {
-    cours = await MongoDatabase().getUser("celian");
-  }
+  getCours() async {}
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
@@ -81,6 +80,20 @@ class _PlanningState extends State<Planning> {
     } else if (end != null) {
       _selectedEvents.value = _getEventsForDay(end);
     }
+  }
+
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+      if (_currentIndex == 0) {
+        Navigator.of(context)
+            .pushNamed(HomePage.tag)
+            .then((_) => setState(() {}));
+      } else if (_currentIndex == 1) {
+      } else if (_currentIndex == 2) {
+        //Profile page navigator
+      }
+    });
   }
 
   @override
@@ -146,6 +159,24 @@ class _PlanningState extends State<Planning> {
               },
             ),
           ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: onTabTapped,
+        currentIndex: _currentIndex, // new
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_month),
+            label: 'Planning',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          )
         ],
       ),
     );
