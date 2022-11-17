@@ -182,21 +182,20 @@ class _PlanningState extends State<Planning> {
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.orange,
+        selectedItemColor: Colors.black,
         onTap: onTabTapped,
         currentIndex: _currentIndex, // new
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: 'Planning',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profil',
-          )
+        items:  [
+          if (User.status == 'admin')...
+          [BottomNavigationBarItem(icon: Icon(Icons.home), label: "Accueil",backgroundColor: Colors.orange,tooltip: "Accueil"),
+            BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: "Planning",backgroundColor: Colors.orange,tooltip: "Planning"),
+            BottomNavigationBarItem(icon: Icon(Icons.settings), label: "admin",backgroundColor: Colors.orange,tooltip: "admin"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil",backgroundColor: Colors.orange,tooltip: "Profil")]
+          else ...
+          [BottomNavigationBarItem(icon: Icon(Icons.home), label: "Accueil",),
+            BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: "Planning"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil")]
         ],
       ),
     );
