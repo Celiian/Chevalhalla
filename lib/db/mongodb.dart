@@ -37,6 +37,7 @@ class MongoDatabase {
 
   createUser(String name, DateTime birthdate, String level, String mail,
       String profilePicture, String status, String ffe, String password) {
+    /// Crée un ustilisateur dans la base de donnée
     collectionUtilisateurs?.insertOne({
       "name": name,
       "birthdate": birthdate,
@@ -50,6 +51,7 @@ class MongoDatabase {
   }
 
   getUser(String mail, String password) async {
+    /// Récupère un utilisateur en utilisant son mot de passe et son mail (utilisé pour la connexion)
     var user = await collectionUtilisateurs
         ?.findOne(where.eq("mail", mail).eq("password", password));
     return user;
@@ -57,6 +59,7 @@ class MongoDatabase {
 
   createClass(userId, String discipline, String field, String className,
       int duration, DateTime date, hour) async {
+    /// Crée un cours dans la base de donnée
     collectionCours?.insertOne({
       "date": date,
       "field": field,
@@ -68,14 +71,15 @@ class MongoDatabase {
       "status": "En attente"
     });
 
-    var competition = await collectionCours?.findOne(
+    var cours = await collectionCours?.findOne(
         where.eq("creator", userId).eq("date", date).eq("hour", hour));
-
+    // Ajoute l'utilisateur en tant que participant
     collectionParticipations?.insertOne(
-        {"user": userId, "event": competition?["_id"], "type": "class"});
+        {"user": userId, "event": cours?["_id"], "type": "class"});
   }
 
   createCompetition(userId, name, date, adress, image) async {
+    /// Crée une competition dans la base de donnée
     collectionCompetition?.insertOne({
       "name": name,
       "date": date,
@@ -85,12 +89,13 @@ class MongoDatabase {
     });
     var competition = await collectionCompetition?.findOne(
         where.eq("creator", userId).eq("date", date).eq("adress", adress));
-
+    // Ajoute l'utilisateur en tant que participant
     collectionParticipations?.insertOne(
         {"user": userId, "event": competition?["_id"], "type": "competition"});
   }
 
   createParty(userId, type, name, hour, description, date, image) async {
+    /// Crée une soirée dans la base de donnée
     collectionSoirees?.insertOne({
       "creator": userId,
       "type": type,
@@ -104,18 +109,25 @@ class MongoDatabase {
 
     var soiree = await collectionSoirees?.findOne(
         where.eq("creator", userId).eq("date", date).eq("hour", hour));
-
+    // Ajoute l'utilisateur en tant que participant
     collectionParticipations
         ?.insertOne({"user": userId, "event": soiree?["_id"], "type": "party"});
   }
 
   getPlanning(userId) async {
+    /// Cette fonction permet d'envoyer au planning un dictionnaire associant une
+    /// journée  (DateTime) à une liste d'évenement (String) pour les afficher
+    /// dans le calendrier.
     var participations =
         await collectionParticipations?.find(where.eq("user", userId)).toList();
-
+    // Récupère toutes les participation à un évènement de l'utilisateur
     List<Map> events = [];
 
     for (var participation in participations!) {
+      /// Cette boucle va, pour chaque type d'évenement (class, party, competition),
+      /// aller récupérer les informations de l'évenement dans leur table de la bdd
+      /// puis les ranger dans un dictionnaire :
+      /// ( "date" : date de l'event, "info": informations de l'evenement)
       late var event;
       Map planningInfo;
       if (participation["type"] == "class") {
@@ -148,29 +160,68 @@ class MongoDatabase {
       events.add(planningInfo);
     }
     events.sort((a, b) => a["date"].compareTo(b["date"]));
+    // Trie les evenements par date croissante (permet de les regrouper par jour pour la suite)
 
     List dateList = [];
     for (var event in events) {
       dateList.add(event["date"]);
     }
+    // Crée une liste avec chaque date existantes d'un évenement (avec doublons)
 
     Map<DateTime, List<String>> map = {};
     int i = 0;
     while (dateList.isNotEmpty) {
+      /// Utilise la liste de date pour remplir le dictionnaire avec en clé une date
+      /// et en valeur la liste des évenements.
       List<String> list = [];
       var date = events[i]["date"];
       while (dateList.contains(date) && events[i]["date"] == date) {
+        // Cette partie permet de regrouper les evenement ayant la même date dans la même liste
+        // la boucle continue d'ajouter des evenements dans la liste temporaire
+        // tant qu'il reste cette date dans la liste de date
         list.add(events[i]["info"]);
         dateList.remove(events[i]["date"]);
         i++;
       }
 
+      //Formatage pour adapter les dates au calendrier
       DateFormat dateFormat = DateFormat("yyyy-MM-dd");
       String dateStr = dateFormat.format(date);
       dateStr = "$dateStr 00:00:00.000Z";
       map.addAll({DateTime.parse(dateStr): list});
-
     }
     return map;
+  }
+
+  getTimeline() async {
+    /// Récupère tous les évenements existants triés par date
+    var participations =
+        await collectionParticipations?.find().toList();
+
+    List events = [];
+
+    for (var participation in participations!) {
+      late var event;
+      Map planningInfo;
+      if (participation["type"] == "class") {
+        event = await collectionCours
+            ?.findOne(where.eq("_id", participation["event"]));
+
+        planningInfo = {"date": event["date"], "info": event};
+      } else if (participation["type"] == "party") {
+        event = await collectionSoirees
+            ?.findOne(where.eq("_id", participation["event"]));
+
+        planningInfo = {"date": event["date"], "info": event};
+      } else {
+        event = await collectionCompetition
+            ?.findOne(where.eq("_id", participation["event"]));
+        planningInfo = {"date": event["date"], "info": event};
+      }
+      events.add(planningInfo);
+    }
+    events.sort((a, b) => a["date"].compareTo(b["date"]));
+
+    return events;
   }
 }

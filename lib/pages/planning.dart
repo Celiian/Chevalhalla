@@ -1,12 +1,12 @@
+// ignore_for_file: prefer_typing_uninitialized_variables, avoid_print
+
 import 'package:chevalhalla/classes/user.dart';
 import 'package:chevalhalla/db/mongodb.dart';
 import 'package:chevalhalla/pages/home.dart';
-import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
-import 'package:modals/modals.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-import '../modal_event.dart';
+import '../widgets/modal_event.dart';
 
 class Planning extends StatefulWidget {
   static const tag = "planning_page";
@@ -20,7 +20,6 @@ class Planning extends StatefulWidget {
 class _PlanningState extends State<Planning> {
   late ValueNotifier<List<String>> _selectedEvents;
   Map<DateTime, List<String>> events = {};
-  final _formKey = GlobalKey<FormState>();
 
   CalendarFormat _calendarFormat = CalendarFormat.twoWeeks;
   DateTime _focusedDay = DateTime.now();
@@ -43,6 +42,7 @@ class _PlanningState extends State<Planning> {
   }
 
   getData() async {
+    // Récupère les données des events et "rafraichit" la page pour les afficher dans le calendirer
     events = await MongoDatabase().getPlanning(User.id);
 
     setState(() {
@@ -58,6 +58,7 @@ class _PlanningState extends State<Planning> {
   }
 
   List<String> _getEventsForDay(DateTime day) {
+    // Récupere les evenement d'un jour
     return events[day] ?? [];
   }
 
@@ -96,6 +97,7 @@ class _PlanningState extends State<Planning> {
   }
 
   void onTabTapped(int index) {
+    // Gère les "tap" sur la bottom nav pour rediriger entre les différentes pages
     setState(() {
       _currentIndex = index;
       if (_currentIndex == 0) {
@@ -164,8 +166,8 @@ class _PlanningState extends State<Planning> {
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       child: ListTile(
-                        onTap: () => print('${value[index]}'),
-                        title: Text('${value[index]}'),
+                        onTap: () => print(value[index]),
+                        title: Text(value[index]),
                       ),
                     );
                   },

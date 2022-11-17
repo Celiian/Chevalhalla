@@ -4,7 +4,7 @@ import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 
-import 'classes/user.dart';
+import '../classes/user.dart';
 
 class ModalEvent {
   var user = User();
