@@ -6,6 +6,10 @@ class ProfilPage extends StatefulWidget {
   const ProfilPage({super.key, required this.title});
 
   final String title;
+
+  final now = DateTime.now();
+  final birthday = DateTime.utc(1989, 11, 9);
+
   static const tag = "profil_page";
 
   @override
@@ -27,7 +31,6 @@ class _ProfilState extends State<ProfilPage> {
       }
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +59,9 @@ class _ProfilState extends State<ProfilPage> {
                       Column(
                         children: [
                           Text(User.name),
-                          Text(User.level),
+                          Text(User.mail),
+                          Text(User.linkFFE),
+                          DateTime.utc(bi)
                           Text(User.level),
                         ],
                       )
