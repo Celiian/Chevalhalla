@@ -1,18 +1,19 @@
 import 'package:chevalhalla/classes/user.dart';
-import 'package:chevalhalla/mongodb.dart';
+import 'package:chevalhalla/db/mongodb.dart';
 import 'package:chevalhalla/pages/home.dart';
+import 'package:chevalhalla/pages/register.dart';
 import 'package:flutter/material.dart';
 
-class FormPage extends StatefulWidget {
-  const FormPage({super.key, required this.title});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<FormPage> createState() => _FormPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _FormPageState extends State<FormPage> {
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final mailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -71,6 +72,12 @@ class _FormPageState extends State<FormPage> {
                     },
                     child: const Text('Se connecter'),
                   ),
+                ),
+                TextButton(
+                  child: const Text("Je n'ai pas de compte"),
+                  onPressed: () {
+                    Navigator.pushNamed(context, RegisterPage.tag);
+                  },
                 ),
               ],
             ),

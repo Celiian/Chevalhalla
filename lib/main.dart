@@ -1,7 +1,9 @@
 import 'package:chevalhalla/pages/home.dart';
+import 'package:chevalhalla/pages/register.dart';
 import 'package:flutter/material.dart';
-import 'mongodb.dart';
-import 'pages/form.dart';
+import 'db/mongodb.dart';
+import 'pages/login.dart';
+import 'pages/register.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,12 +18,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Home',
-      routes:
-      {HomePage.tag: (context) => const HomePage(),},
+      routes: {
+        HomePage.tag: (context) => const HomePage(),
+        RegisterPage.tag: (context) => const RegisterPage(),
+      },
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      home: const FormPage(title: 'Chevalhalla'),
+      home: const LoginPage(title: 'Chevalhalla'),
     );
   }
 }
