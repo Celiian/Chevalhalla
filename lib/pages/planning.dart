@@ -1,4 +1,3 @@
-import 'package:chevalhalla/mongodb.dart';
 import 'package:chevalhalla/pages/home.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +18,7 @@ class Planning extends StatefulWidget {
 class _PlanningState extends State<Planning> {
   late final ValueNotifier<List<String>> _selectedEvents;
   Map<DateTime, List<String>> events = {
-    DateTime.utc(2022, 11, 17): ["Demandé | Cours de saut à 17h"]
+    DateTime.utc(2022, 11, 18): ["Demandé | Cours de saut à 17h"]
   };
   final _formKey = GlobalKey<FormState>();
 

@@ -5,7 +5,7 @@ import 'dart:developer';
 import 'dart:math';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:flutter/material.dart';
-import 'constant.dart';
+import '../constant.dart';
 
 class MongoDatabase {
   static DbCollection? collectionUtilisateurs;
@@ -33,6 +33,22 @@ class MongoDatabase {
       print("connected");
     }
   }
+
+
+  createUser(String name, DateTime birthdate, String level, String mail,
+      String profilePicture, String status, String ffe, String password) {
+    collectionUtilisateurs?.insertOne({
+      "name": name,
+      "birthdate": birthdate,
+      "level": level,
+      "mail": mail,
+      "profil_picture": profilePicture,
+      "status": status,
+      "ffe": ffe,
+      "password": password
+    });
+  }
+
 
 
   getUser(mail, password) async {

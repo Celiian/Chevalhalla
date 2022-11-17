@@ -1,4 +1,6 @@
 import 'package:chevalhalla/pages/planning.dart';
+import 'package:chevalhalla/classes/user.dart';
+import 'package:chevalhalla/db/mongodb.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {

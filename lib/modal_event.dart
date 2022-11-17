@@ -14,7 +14,7 @@ class ModalEvent {
               children: <Widget>[
                 const Padding(
                   padding: EdgeInsets.only(left: 100.0),
-                  child: Text('Que voullez-vous crée ?',
+                  child: Text('Que voulez-vous créer ?',
                       style: TextStyle(fontSize: 20),
                       textAlign: TextAlign.center),
                 ),
@@ -28,7 +28,7 @@ class ModalEvent {
                           CreateCours(context, _dateController)
                         }),
                 ListTile(
-                  title: const Text('Un Concour', textAlign: TextAlign.center),
+                  title: const Text('Une Compétition', textAlign: TextAlign.center),
                   onTap: () =>
                       {Navigator.pop(context), CreateCompetition(context)},
                 ),
@@ -343,7 +343,7 @@ class ModalEvent {
                   TextFormField(
                     //controller: ,
                     decoration: const InputDecoration(
-                      hintText: 'Entrez du concours',
+                      hintText: 'Entrez la date de la compétition',
                     ),
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {

@@ -1,12 +1,13 @@
 import 'package:chevalhalla/pages/planning.dart';
 import 'package:flutter/material.dart';
-import 'mongodb.dart';
 import 'pages/home.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:chevalhalla/pages/home.dart';
+import 'package:chevalhalla/pages/register.dart';
 import 'package:flutter/material.dart';
-import 'mongodb.dart';
-import 'pages/form.dart';
+import 'db/mongodb.dart';
+import 'pages/login.dart';
+import 'pages/register.dart';
 
 Future<void> main() async {
   initializeDateFormatting();
@@ -25,12 +26,13 @@ class MyApp extends StatelessWidget {
       title: 'Home',
       routes: {
         HomePage.tag: (context) => const HomePage(),
-        Planning.tag: (context) => const Planning()
+        Planning.tag: (context) => const Planning(),
+        RegisterPage.tag: (context) => const RegisterPage(),
       },
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      home: const FormPage(title: 'Chevalhalla'),
+      home: const LoginPage(title: 'Chevalhalla'),
     );
   }
 }
