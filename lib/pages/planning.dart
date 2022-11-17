@@ -22,7 +22,7 @@ class _PlanningState extends State<Planning> {
   Map<DateTime, List<String>> events = {};
   final _formKey = GlobalKey<FormState>();
 
-  CalendarFormat _calendarFormat = CalendarFormat.month;
+  CalendarFormat _calendarFormat = CalendarFormat.twoWeeks;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
