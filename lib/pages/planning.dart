@@ -1,7 +1,11 @@
 import 'package:chevalhalla/mongodb.dart';
 import 'package:chevalhalla/pages/home.dart';
+import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
+import 'package:modals/modals.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+import '../modal_event.dart';
 
 class Planning extends StatefulWidget {
   static const tag = "planning_page";
@@ -17,6 +21,10 @@ class _PlanningState extends State<Planning> {
   Map<DateTime, List<String>> events = {
     DateTime.utc(2022, 11, 17): ["Demandé | Cours de saut à 17h"]
   };
+  final _formKey = GlobalKey<FormState>();
+
+  final _dateController = TextEditingController();
+
 
   CalendarFormat _calendarFormat = CalendarFormat.week;
   DateTime _focusedDay = DateTime.now();
@@ -96,13 +104,15 @@ class _PlanningState extends State<Planning> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Planning'),
       ),
-      body: Column(
+      body: Center(
+          child: Column(
         children: [
           TableCalendar<String>(
             locale: 'fr_Fr',
@@ -160,6 +170,12 @@ class _PlanningState extends State<Planning> {
             ),
           ),
         ],
+      )),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          ModalEvent().modalChoice(context, _dateController);
+          },
+        child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
@@ -175,7 +191,7 @@ class _PlanningState extends State<Planning> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Profile',
+            label: 'Profil',
           )
         ],
       ),
