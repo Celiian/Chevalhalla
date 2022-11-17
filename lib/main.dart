@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'db/mongodb.dart';
 import 'pages/login.dart';
 import 'pages/register.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,16 +17,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Home',
-      routes: {
-        HomePage.tag: (context) => const HomePage(),
-        RegisterPage.tag: (context) => const RegisterPage(),
-      },
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
+    return AdaptiveTheme(
+      light: ThemeData(
+        brightness: Brightness.light,
+        primarySwatch: Colors.blue,
       ),
-      home: const LoginPage(title: 'Chevalhalla'),
+      dark: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blue,
+      ),
+      initial: AdaptiveThemeMode.light,
+      builder: (theme, darkTheme) => MaterialApp(
+        title: 'Chevalhalla',
+        theme: theme,
+        darkTheme: darkTheme,
+        home: const LoginPage(title: 'Connexion'),
+        routes: {
+          RegisterPage.tag: (context) => const RegisterPage(),
+          HomePage.tag: (context) => const HomePage(),
+        },
+      ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:chevalhalla/pages/home.dart';
 import 'package:chevalhalla/pages/login.dart';
 import 'package:flutter/material.dart';
@@ -28,9 +29,17 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Formulaire'),
-      ),
+      appBar: AppBar(title: const Text("Connexion"), actions: <Widget>[
+        IconButton(
+          icon: const Icon(
+            Icons.lightbulb_sharp,
+          ),
+          tooltip: 'Changer de thème',
+          onPressed: () {
+            AdaptiveTheme.of(context).toggleThemeMode();
+          },
+        ),
+      ]),
       body:
       Form(
         key: _formKey,

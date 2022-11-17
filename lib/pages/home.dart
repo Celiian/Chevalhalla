@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:chevalhalla/classes/user.dart';
 import 'package:chevalhalla/db/mongodb.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +35,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Form page"),
-      ),
+      appBar: AppBar(title: const Text("Connexion"), actions: <Widget>[
+        IconButton(
+          icon: const Icon(
+            Icons.lightbulb_sharp,
+          ),
+          tooltip: 'Changer de thème',
+          onPressed: () {
+            AdaptiveTheme.of(context).toggleThemeMode();
+          },
+        ),
+      ]),
       body: Center(
           child: Column(
         children: [
