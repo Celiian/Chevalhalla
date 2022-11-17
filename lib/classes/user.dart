@@ -1,3 +1,4 @@
+
 import 'package:chevalhalla/mongodb.dart';
 
 class User {
@@ -37,5 +38,6 @@ class User {
 
   toJson() {
     return '{ "name": name, "birthdate": birthdate, "level": level, "mail": mail, "profilePicture": profilePicture,"status": status,"linkFFE": linkFFE, "password": password}';
+
   }
 }

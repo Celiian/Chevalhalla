@@ -1,7 +1,10 @@
+import 'package:chevalhalla/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'mongodb.dart';
 import 'pages/home.dart';
 import 'pages/register.dart';
+import 'pages/form.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      home: const MyHomePage(title: 'Chevalhalla'),
+      home: const FormPage(title: 'Chevalhalla'),
     );
   }
 }
