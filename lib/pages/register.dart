@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:chevalhalla/pages/home.dart';
 import 'package:chevalhalla/pages/login.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,8 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-   var user = User();
+  bool _isHidden = true;
+  var user = User();
   final _formKey = GlobalKey<FormState>();
   final _name = TextEditingController();
   final _birthday = TextEditingController();
@@ -28,9 +30,17 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Formulaire'),
-      ),
+      appBar: AppBar(title: const Text("Connexion"), actions: <Widget>[
+        IconButton(
+          icon: const Icon(
+            Icons.lightbulb_sharp,
+          ),
+          tooltip: 'Changer de thème',
+          onPressed: () {
+            AdaptiveTheme.of(context).toggleThemeMode();
+          },
+        ),
+      ]),
       body:
       Form(
         key: _formKey,
@@ -38,7 +48,8 @@ class _RegisterPageState extends State<RegisterPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 16.0, left: 20.0, right: 20.0),
+              padding: const EdgeInsets.only(
+                  top: 16.0, left: 20.0, right: 20.0),
               child: TextFormField(
                 controller: _profilePicture,
                 decoration: const InputDecoration(
@@ -50,8 +61,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
 
               ),
-            ),Padding(
-              padding: const EdgeInsets.only(top: 16.0, left: 20.0, right: 20.0),
+            ), Padding(
+              padding: const EdgeInsets.only(
+                  top: 16.0, left: 20.0, right: 20.0),
               child: TextFormField(
                 controller: _name,
                 decoration: const InputDecoration(
@@ -64,7 +76,8 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             Padding(
-                padding: const EdgeInsets.only(top: 16.0, left: 20.0, right: 20.0),
+                padding: const EdgeInsets.only(
+                    top: 16.0, left: 20.0, right: 20.0),
                 child: TextFormField(
                   controller: _birthday,
                   decoration: const InputDecoration(
@@ -75,16 +88,21 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
 
                   ),
-                  readOnly: true,  //set it true, so that user will not able to edit text
+                  //readOnly sert à rendre le champ non modifiable en ecrit
+                  readOnly: true,
+
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(
-                        context: context, initialDate: DateTime.now(),
-                        firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        //DateTime.now() - not to allow to choose before today.
                         lastDate: DateTime(2101)
                     );
 
-                    if(pickedDate != null ){
-                      String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+                    if (pickedDate != null) {
+                      String formattedDate = DateFormat('yyyy-MM-dd').format(
+                          pickedDate);
 
                       setState(() {
                         _birthday.text = formattedDate;
@@ -94,7 +112,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 )
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 16.0, left: 20.0, right: 20.0),
+              padding: const EdgeInsets.only(
+                  top: 16.0, left: 20.0, right: 20.0),
               child: TextFormField(
                 controller: _mail,
                 decoration: const InputDecoration(
@@ -107,7 +126,8 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             Padding(
-                padding: const EdgeInsets.only(top: 16.0, left: 20.0, right: 20.0),
+                padding: const EdgeInsets.only(
+                    top: 16.0, left: 20.0, right: 20.0),
                 child: DropdownButtonFormField(
                   decoration: const InputDecoration(
                     label: Text("Votre Niveau"),
@@ -120,7 +140,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       _level.text = newValue!;
                     });
                   },
-                  items: <String>['Amateur','Club1','Club2','Club3','Club4']
+                  items: <String>['Amateur', 'Club1', 'Club2', 'Club3', 'Club4']
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -130,7 +150,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 )
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 16.0, left: 20.0, right: 20.0),
+              padding: const EdgeInsets.only(
+                  top: 16.0, left: 20.0, right: 20.0),
               child: TextFormField(
                 controller: _linkFFE,
                 decoration: const InputDecoration(
@@ -143,14 +164,26 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 16.0, left: 20.0, right: 20.0),
-              child: TextFormField(
+              padding: const EdgeInsets.only(
+                  top: 16.0, left: 20.0, right: 20.0),
+              child: TextField(
                 controller: _password,
-                decoration: const InputDecoration(
-                  label: Text("Mot de passe"),
-                  hintText: '********',
-                  border: OutlineInputBorder(
+                //obscureText sert à cacher le mot de passe
+                obscureText: _isHidden,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                  hintText: 'Password',
+                  labelText: 'Password',
+                  //Affiche un bouton pour cacher ou afficher le mot de passe
+                  suffix: InkWell(
+                    onTap: _togglePasswordView,
+                    child: Icon(
+                      _isHidden
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
                   ),
                 ),
               ),
@@ -160,7 +193,15 @@ class _RegisterPageState extends State<RegisterPage> {
               child: ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    user.createUser(_name.text, _birthday.text, _level.text, _mail.text, _profilePicture.text, "cavalier", _linkFFE.text, _password.text);
+                    user.createUser(
+                        _name.text,
+                        _birthday.text,
+                        _level.text,
+                        _mail.text,
+                        _profilePicture.text,
+                        "cavalier",
+                        _linkFFE.text,
+                        _password.text);
                     Navigator.of(context)
                         .pushNamed(
                       HomePage.tag,
@@ -181,5 +222,12 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  //Fonction pour cacher le mot de passe
+  void _togglePasswordView() {
+    setState(() {
+      _isHidden = !_isHidden;
+    });
   }
 }

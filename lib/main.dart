@@ -7,7 +7,7 @@ import 'package:chevalhalla/pages/register.dart';
 import 'package:flutter/material.dart';
 import 'db/mongodb.dart';
 import 'pages/login.dart';
-import 'pages/register.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 
 Future<void> main() async {
   initializeDateFormatting();
@@ -22,17 +22,29 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Home',
-      routes: {
-        HomePage.tag: (context) => const HomePage(),
-        Planning.tag: (context) => const Planning(),
-        RegisterPage.tag: (context) => const RegisterPage(),
-      },
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
+    return AdaptiveTheme(
+      //thème clair
+      light: ThemeData(
+        brightness: Brightness.light,
+        primarySwatch: Colors.blue,
       ),
-      home: const LoginPage(title: 'Chevalhalla'),
+      //thème sombre
+      dark: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blue,
+      ),
+      //thème par défaut
+      initial: AdaptiveThemeMode.light,
+      builder: (theme, darkTheme) => MaterialApp(
+        title: 'Chevalhalla',
+        theme: theme,
+        darkTheme: darkTheme,
+        home: const LoginPage(title: 'Connexion'),
+        routes: {
+          RegisterPage.tag: (context) => const RegisterPage(),
+          HomePage.tag: (context) => const HomePage(),
+        },
+      ),
     );
   }
 }
