@@ -4,7 +4,6 @@ import 'package:chevalhalla/db/mongodb.dart';
 import 'package:chevalhalla/pages/home.dart';
 import 'package:chevalhalla/pages/register.dart';
 import 'package:flutter/material.dart';
-import 'package:passwordfield/passwordfield.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
@@ -16,6 +15,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _isHidden = true;
   final _formKey = GlobalKey<FormState>();
   final mailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -31,6 +31,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             tooltip: 'Changer de thème',
             onPressed: () {
+              //toggleThemeMode(); sert à changer de thème
               AdaptiveTheme.of(context).toggleThemeMode();
             },
           ),
@@ -65,22 +66,23 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: TextFormField(
+                  child: TextField(
                     controller: passwordController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(
+                    //obscureText sert à cacher le mot de passe
+                    obscureText: _isHidden,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0)),
                       ),
-                      icon: Icon(Icons.lock),
-                      labelText: 'Mots de passe',
-                      hintText: 'Entrez votre mots de passe',
+                      icon: const Icon(Icons.lock),
+                      labelText: 'Mot de passe',
+                      hintText: 'Entrez votre mot de passe',
+                      //InkWell permet de rendre le bouton cliquable
+                      suffix: InkWell(
+                        onTap: _togglePasswordView,
+                        child: Icon(Icons.visibility),
+                      ),
                     ),
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Entrez un mots de passe valide';
-                      }
-                      return null;
-                    },
                   ),
                 ),
                 Padding(
@@ -89,6 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Center(
                     child: ElevatedButton(
                       onPressed: () async {
+                        //si le formulaire est valide on envoie les données à la base de données
                         if (_formKey.currentState!.validate()) {
                           user.decodeJson(await MongoDatabase().getUser(
                               mailController.text, passwordController.text));
@@ -115,5 +118,12 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ])));
+  }
+
+  _togglePasswordView() {
+    setState(() {
+      _isHidden = !_isHidden;
+      //si _isHidden est vrai, alors on affiche le mot de passe
+    });
   }
 }

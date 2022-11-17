@@ -3,7 +3,6 @@ import 'package:chevalhalla/pages/register.dart';
 import 'package:flutter/material.dart';
 import 'db/mongodb.dart';
 import 'pages/login.dart';
-import 'pages/register.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 
 Future<void> main() async {
@@ -18,14 +17,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdaptiveTheme(
+      //thème clair
       light: ThemeData(
         brightness: Brightness.light,
         primarySwatch: Colors.blue,
       ),
+      //thème sombre
       dark: ThemeData(
         brightness: Brightness.dark,
         primarySwatch: Colors.blue,
       ),
+      //thème par défaut
       initial: AdaptiveThemeMode.light,
       builder: (theme, darkTheme) => MaterialApp(
         title: 'Chevalhalla',

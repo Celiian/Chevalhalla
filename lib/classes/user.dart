@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:chevalhalla/db/mongodb.dart';
 import 'package:intl/intl.dart';
 
+// Classe User qui représente un utilisateur
 class User {
   static var name = "";
   static var birthdate = DateTime.utc(2000, 12, 31);
@@ -14,7 +15,7 @@ class User {
   static var ffe = "";
   static var password = "";
 
-
+  // Constructeur de la classe User
   createUser(newName, newBirthdate, newLevel, newMail, newProfilePicture, newStatus, newFfe, newPassword){
     name = newName;
     birthdate = DateTime.parse(newBirthdate);
@@ -28,7 +29,7 @@ class User {
     MongoDatabase().createUser(name, birthdate, level, mail, profilePicture, status, ffe, password);
   }
 
-
+  // Fonction qui permet de récupérer les informations d'un utilisateur
   decodeJson(json) {
     name = json?["name"];
     mail = json?["mail"];
@@ -40,6 +41,7 @@ class User {
     ffe = json["ffe"];
   }
 
+  // Fonction qui permet de convertir un utilisateur en String
   @override
   String toString() {
     return 'User{$name, $mail, $birthdate}';

@@ -55,6 +55,7 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       )),
+      //bottomNavigationBar sert à créer la barre de navigation en bas de l'écran
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
         currentIndex: _currentIndex, // new
