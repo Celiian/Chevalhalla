@@ -4,6 +4,7 @@ import 'package:chevalhalla/db/mongodb.dart';
 import 'package:intl/intl.dart';
 
 class User {
+  static var id;
   static var name = "";
   static var birthdate = DateTime.utc(2000, 12, 31);
   static var level = "";
@@ -26,10 +27,12 @@ class User {
     password = newPassword;
 
     MongoDatabase().createUser(name, birthdate, level, mail, profilePicture, status, ffe, password);
+    decodeJson(MongoDatabase().getUser(mail, password));
   }
 
 
   decodeJson(json) {
+    id= json?["_id"];
     name = json?["name"];
     mail = json?["mail"];
     password = json?["password"];

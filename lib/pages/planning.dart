@@ -22,8 +22,6 @@ class _PlanningState extends State<Planning> {
   };
   final _formKey = GlobalKey<FormState>();
 
-  final _dateController = TextEditingController();
-
 
   CalendarFormat _calendarFormat = CalendarFormat.week;
   DateTime _focusedDay = DateTime.now();
@@ -108,7 +106,7 @@ class _PlanningState extends State<Planning> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Planning'),
+        title: const Text('Form Page'),
       ),
       body: Center(
           child: Column(
@@ -172,7 +170,7 @@ class _PlanningState extends State<Planning> {
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          ModalEvent().modalChoice(context, _dateController);
+          ModalEvent().modalChoice(context);
           },
         child: const Icon(Icons.add),
       ),

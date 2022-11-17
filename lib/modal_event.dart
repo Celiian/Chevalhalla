@@ -1,10 +1,15 @@
+import 'package:chevalhalla/db/mongodb.dart';
 import 'package:flutter/material.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 
+import 'classes/user.dart';
+
 class ModalEvent {
-  void modalChoice(BuildContext context, _dateController) {
+  var user = User();
+
+  void modalChoice(BuildContext context) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
@@ -23,20 +28,19 @@ class ModalEvent {
                       'Un Cours',
                       textAlign: TextAlign.center,
                     ),
-                    onTap: () => {
-                          Navigator.pop(context),
-                          CreateCours(context, _dateController)
-                        }),
+                    onTap: () =>
+                        {Navigator.pop(context), createCours(context)}),
                 ListTile(
-                  title: const Text('Une Compétition', textAlign: TextAlign.center),
+                  title: const Text('Une Compétition',
+                      textAlign: TextAlign.center),
                   onTap: () =>
-                      {Navigator.pop(context), CreateCompetition(context)},
+                      {Navigator.pop(context), createCompetition(context)},
                 ),
                 ListTile(
                   title: const Text('Une Soirée', textAlign: TextAlign.center),
                   onTap: () => {
                     Navigator.pop(context),
-                    CreateSoiree(context, _dateController),
+                    CreateSoiree(context),
                   },
                 ),
               ],
@@ -45,7 +49,14 @@ class ModalEvent {
         });
   }
 
-  void CreateSoiree(BuildContext context, _dateController) {
+  void CreateSoiree(BuildContext context) {
+    final typeController = TextEditingController();
+    final nameController = TextEditingController();
+    final descriptionController = TextEditingController();
+    final hourController = TextEditingController();
+    final dateController = TextEditingController();
+    final imageController = TextEditingController();
+
     final format = DateFormat("HH:mm");
     showDialog(
         context: context,
@@ -70,9 +81,11 @@ class ModalEvent {
                           child: Text('Repas'),
                         ),
                       ],
-                      onChanged: (value) {}),
+                      onChanged: (value) {
+                        typeController.text = value!;
+                      }),
                   TextFormField(
-                    //controller: ,
+                    controller: nameController,
                     decoration: const InputDecoration(
                       hintText: 'Entrez le nom de la soirée',
                     ),
@@ -84,7 +97,14 @@ class ModalEvent {
                     },
                   ),
                   TextFormField(
-                    controller: _dateController,
+                    controller: imageController,
+                    decoration: const InputDecoration(
+                      labelText: 'Photo de la soirée',
+                      hintText: 'Entrez le lien de la photo',
+                    ),
+                  ),
+                  TextFormField(
+                    controller: dateController,
                     decoration: const InputDecoration(
                       hintText: 'Entrez la date de la soirée',
                     ),
@@ -104,8 +124,8 @@ class ModalEvent {
                           lastDate: DateTime(2100));
                       if (date != null) {
                         final String formattedDate =
-                            DateFormat('dd-MM-yyyy').format(date);
-                        _dateController.text = formattedDate;
+                            DateFormat('yyyy-MM-dd').format(date);
+                        dateController.text = formattedDate;
                       }
                     },
                   ),
@@ -122,11 +142,13 @@ class ModalEvent {
                         initialTime: TimeOfDay.fromDateTime(
                             currentValue ?? DateTime.now()),
                       );
+                      hourController.text =
+                          DateTimeField.convert(time).toString();
                       return DateTimeField.convert(time);
                     },
                   ),
                   TextFormField(
-                    //controller: ,
+                    controller: descriptionController,
                     decoration: const InputDecoration(
                       hintText: 'Description de la soirée',
                     ),
@@ -149,6 +171,15 @@ class ModalEvent {
               ),
               TextButton(
                 onPressed: () {
+                  MongoDatabase().createParty(
+                    User.id,
+                    typeController.text,
+                    nameController.text,
+                    hourController.text,
+                    descriptionController.text,
+                    DateTime.parse(dateController.text),
+                    imageController.text
+                  );
                   Navigator.of(context).pop();
                 },
                 child: const Text('Créer'),
@@ -158,7 +189,14 @@ class ModalEvent {
         });
   }
 
-  void CreateCours(BuildContext context, _dateController) {
+  void createCours(BuildContext context) {
+    final fieldController = TextEditingController();
+    final nameController = TextEditingController();
+    final disciplineController = TextEditingController();
+    final durationController = TextEditingController();
+    final hourController = TextEditingController();
+    final dateController = TextEditingController();
+
     final format = DateFormat("HH:mm");
     showDialog(
         context: context,
@@ -188,7 +226,9 @@ class ModalEvent {
                           child: Text('Endurance'),
                         ),
                       ],
-                      onChanged: (value) {}),
+                      onChanged: (value) {
+                        disciplineController.text = value!;
+                      }),
                   DropdownButtonFormField(
                       decoration: const InputDecoration(
                         hintText: 'Choisissez le terrain',
@@ -204,9 +244,11 @@ class ModalEvent {
                           child: Text('Manège'),
                         ),
                       ],
-                      onChanged: (value) {}),
+                      onChanged: (value) {
+                        fieldController.text = value!;
+                      }),
                   TextFormField(
-                    //controller: ,
+                    controller: nameController,
                     decoration: const InputDecoration(
                       labelText: 'Nom du cours',
                       hintText: 'Entrez le nom du cours',
@@ -225,19 +267,20 @@ class ModalEvent {
                       ),
                       items: const [
                         DropdownMenuItem(
-                          value: 60,
+                          value: "60",
                           child: Text('1h'),
                         ),
                         DropdownMenuItem(
-                          value: 30,
+                          value: "30",
                           child: Text('30min'),
                         ),
                       ],
-                      onChanged: (value) {}),
+                      onChanged: (value) {
+                        durationController.text = value!;
+                      }),
                   TextFormField(
-                    controller: _dateController,
+                    controller: dateController,
                     decoration: const InputDecoration(
-                      labelText: 'Date du cours',
                       hintText: 'Entrez la date du cours',
                     ),
                     validator: (String? value) {
@@ -256,12 +299,13 @@ class ModalEvent {
                           lastDate: DateTime(2100));
                       if (date != null) {
                         final String formattedDate =
-                            DateFormat('dd-MM-yyyy').format(date);
-                        _dateController.text = formattedDate;
+                            DateFormat('yyyy-MM-dd').format(date);
+                        dateController.text = formattedDate;
                       }
                     },
                   ),
                   DateTimeField(
+                    controller: hourController,
                     format: format,
                     decoration: const InputDecoration(
                       labelText: 'Heure du cours',
@@ -273,6 +317,8 @@ class ModalEvent {
                         initialTime: TimeOfDay.fromDateTime(
                             currentValue ?? DateTime.now()),
                       );
+                      disciplineController.text =
+                          DateTimeField.convert(time).toString();
                       return DateTimeField.convert(time);
                     },
                   ),
@@ -288,6 +334,14 @@ class ModalEvent {
               ),
               TextButton(
                 onPressed: () {
+                  MongoDatabase().createClass(
+                      User.id,
+                      disciplineController.text,
+                      fieldController.text,
+                      nameController.text,
+                      int.parse(durationController.text),
+                      DateTime.parse(dateController.text),
+                      hourController.text);
                   Navigator.of(context).pop();
                 },
                 child: const Text('Créer'),
@@ -297,7 +351,12 @@ class ModalEvent {
         });
   }
 
-  void CreateCompetition(BuildContext context) {
+  void createCompetition(BuildContext context) {
+    final imageController = TextEditingController();
+    final nameController = TextEditingController();
+    final adressController = TextEditingController();
+    final dateController = TextEditingController();
+
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -308,14 +367,14 @@ class ModalEvent {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   TextFormField(
-                    //controller: ,
+                    controller: imageController,
                     decoration: const InputDecoration(
                       labelText: 'Photo de la compétition',
                       hintText: 'Entrez le lien de la photo',
                     ),
                   ),
                   TextFormField(
-                    //controller: ,
+                    controller: nameController,
                     decoration: const InputDecoration(
                       labelText: 'Nom de la compétition',
                       hintText: 'Entrez le nom de la compétition',
@@ -328,7 +387,7 @@ class ModalEvent {
                     },
                   ),
                   TextFormField(
-                    //controller: ,
+                    controller: adressController,
                     decoration: const InputDecoration(
                       labelText: 'Adresse de la compétition',
                       hintText: 'Entrez l\'adresse de la compétition',
@@ -341,7 +400,7 @@ class ModalEvent {
                     },
                   ),
                   TextFormField(
-                    //controller: ,
+                    controller: dateController,
                     decoration: const InputDecoration(
                       hintText: 'Entrez la date de la compétition',
                     ),
@@ -361,8 +420,8 @@ class ModalEvent {
                           lastDate: DateTime(2100));
                       if (date != null) {
                         final String formattedDate =
-                        DateFormat('dd-MM-yyyy').format(date);
-                        //_dateController.text = formattedDate;
+                            DateFormat('yyyy-MM-dd').format(date);
+                        dateController.text = formattedDate;
                       }
                     },
                   ),
@@ -370,8 +429,7 @@ class ModalEvent {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child:
-                      Text('Afficher les participants')),
+                      child: const Text('Afficher les participants')),
                 ],
               ),
             ),
@@ -384,6 +442,12 @@ class ModalEvent {
               ),
               TextButton(
                 onPressed: () {
+                  MongoDatabase().createCompetition(
+                      User.id,
+                      nameController.text,
+                      DateTime.parse(dateController.text),
+                      adressController.text,
+                      imageController.text);
                   Navigator.of(context).pop();
                 },
                 child: const Text('Créer'),
