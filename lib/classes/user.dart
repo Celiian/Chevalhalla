@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 
 class User {
   static var name = "";
-  static var birthdate = "";
+  static var birthdate = DateTime.utc(2000, 12, 31);
   static var level = "";
   static var mail = "";
-  static var profilePicture = "";
+  static String profilePicture = "";
   static var themeColor = "blue";
   static var status = "";
   static var linkFFE = "";
@@ -17,10 +17,10 @@ class User {
     name = json?["name"];
     mail = json?["mail"];
     password = json?["password"];
-    //level = json["level"];
-    //birthdate = json["birthdate"];
-    //profilePicture = json["profilePicture"];
-    //status = json["status"];
-    //linkFFE = json["linkFFE"];
+    level = json["level"];
+    birthdate = json["birthdate"];
+    profilePicture = json["profil_picture"];
+    status = json["status"];
+    linkFFE = json["ffe"];
   }
 }

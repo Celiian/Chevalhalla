@@ -2,6 +2,7 @@
 
 import 'package:chevalhalla/classes/user.dart';
 import 'package:chevalhalla/mongodb.dart';
+import 'package:chevalhalla/pages/profil.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,7 +27,7 @@ class _HomePageState extends State<HomePage> {
         //Planning page navigator
       }
       else if (_currentIndex == 2) {
-        //Profile page navigator
+        Navigator.of(context).pushNamed(ProfilPage.tag,).then((_) => setState(() {}));
       }
     });
   }
