@@ -1,3 +1,5 @@
+import 'package:chevalhalla/classes/user.dart';
+import 'package:chevalhalla/db/mongodb.dart';
 import 'package:chevalhalla/pages/home.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +18,11 @@ class Planning extends StatefulWidget {
 }
 
 class _PlanningState extends State<Planning> {
-  late final ValueNotifier<List<String>> _selectedEvents;
-  Map<DateTime, List<String>> events = {
-    DateTime.utc(2022, 11, 18): ["Demandé | Cours de saut à 17h"]
-  };
+  late ValueNotifier<List<String>> _selectedEvents;
+  Map<DateTime, List<String>> events = {};
   final _formKey = GlobalKey<FormState>();
 
-
-  CalendarFormat _calendarFormat = CalendarFormat.week;
+  CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
@@ -38,9 +37,18 @@ class _PlanningState extends State<Planning> {
   @override
   void initState() {
     super.initState();
-
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+    getData();
+  }
+
+  getData() async {
+    events = await MongoDatabase().getPlanning(User.id);
+
+    setState(() {
+      _selectedDay = _focusedDay;
+      _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+    });
   }
 
   @override
@@ -100,7 +108,6 @@ class _PlanningState extends State<Planning> {
       }
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -171,7 +178,7 @@ class _PlanningState extends State<Planning> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           ModalEvent().modalChoice(context);
-          },
+        },
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(

@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:flutter/material.dart';
 import '../constant.dart';
+import 'package:intl/intl.dart';
 
 class MongoDatabase {
   static DbCollection? collectionUtilisateurs;
@@ -55,19 +56,26 @@ class MongoDatabase {
   }
 
   createClass(userId, String discipline, String field, String className,
-      int duration, DateTime date, hour) {
+      int duration, DateTime date, hour) async {
     collectionCours?.insertOne({
       "date": date,
       "field": field,
       "duration": duration,
       "name": className,
-      "user_id": userId,
+      "creator": userId,
       "hour": hour,
-      "discipline": discipline
+      "discipline": discipline,
+      "status": "En attente"
     });
+
+    var competition = await collectionCours?.findOne(
+        where.eq("creator", userId).eq("date", date).eq("hour", hour));
+
+    collectionParticipations?.insertOne(
+        {"user": userId, "event": competition?["_id"], "type": "class"});
   }
 
-  createCompetition(userId, name, date, adress, image) {
+  createCompetition(userId, name, date, adress, image) async {
     collectionCompetition?.insertOne({
       "name": name,
       "date": date,
@@ -75,10 +83,14 @@ class MongoDatabase {
       "image": image,
       "creator": userId
     });
+    var competition = await collectionCompetition?.findOne(
+        where.eq("creator", userId).eq("date", date).eq("adress", adress));
+
+    collectionParticipations?.insertOne(
+        {"user": userId, "event": competition?["_id"], "type": "competition"});
   }
 
-
-  createParty(userId, type, name, hour, description, date, image){
+  createParty(userId, type, name, hour, description, date, image) async {
     collectionSoirees?.insertOne({
       "creator": userId,
       "type": type,
@@ -86,8 +98,79 @@ class MongoDatabase {
       "hour": hour,
       "description": description,
       "date": date,
-      "image": image
+      "image": image,
+      "status": "En attente"
     });
 
+    var soiree = await collectionSoirees?.findOne(
+        where.eq("creator", userId).eq("date", date).eq("hour", hour));
+
+    collectionParticipations
+        ?.insertOne({"user": userId, "event": soiree?["_id"], "type": "party"});
+  }
+
+  getPlanning(userId) async {
+    var participations =
+        await collectionParticipations?.find(where.eq("user", userId)).toList();
+
+    List<Map> events = [];
+
+    for (var participation in participations!) {
+      late var event;
+      Map planningInfo;
+      if (participation["type"] == "class") {
+        event = await collectionCours
+            ?.findOne(where.eq("_id", participation["event"]));
+        var name = event["name"];
+        var status = event["status"];
+        var hour = event["hour"];
+        planningInfo = {
+          "date": event["date"],
+          "info": "$status | $name | $hour "
+        };
+      } else if (participation["type"] == "party") {
+        event = await collectionSoirees
+            ?.findOne(where.eq("_id", participation["event"]));
+        var name = event["name"];
+        var status = event["status"];
+        var hour = event["hour"];
+        planningInfo = {
+          "date": event["date"],
+          "info": "$status | $name | $hour "
+        };
+      } else {
+        event = await collectionCompetition
+            ?.findOne(where.eq("_id", participation["event"]));
+        var name = event["name"];
+        var adress = event["adress"];
+        planningInfo = {"date": event["date"], "info": "$name | $adress "};
+      }
+      events.add(planningInfo);
+    }
+    events.sort((a, b) => a["date"].compareTo(b["date"]));
+
+    List dateList = [];
+    for (var event in events) {
+      dateList.add(event["date"]);
+    }
+
+    Map<DateTime, List<String>> map = {};
+    int i = 0;
+    while (dateList.isNotEmpty) {
+      List<String> list = [];
+      var date = events[i]["date"];
+      while (dateList.contains(date) && events[i]["date"] == date) {
+        list.add(events[i]["info"]);
+        dateList.remove(events[i]["date"]);
+        i++;
+      }
+
+      DateFormat dateFormat = DateFormat("yyyy-MM-dd");
+      String dateStr = dateFormat.format(date);
+      dateStr = "$dateStr 00:00:00.000Z";
+      map.addAll({DateTime.parse(dateStr): list});
+
+    }
+    return map;
   }
 }
