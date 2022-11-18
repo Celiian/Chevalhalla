@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, await_only_futures
 
 import 'dart:convert';
 import 'dart:developer';
@@ -38,6 +38,8 @@ class MongoDatabase {
   createUser(String name, DateTime birthdate, String level, String mail,
       String profilePicture, String status, String ffe, String password) {
     /// Crée un ustilisateur dans la base de donnée
+    var date = DateTime.now();
+
     collectionUtilisateurs?.insertOne({
       "name": name,
       "birthdate": birthdate,
@@ -46,7 +48,8 @@ class MongoDatabase {
       "profil_picture": profilePicture,
       "status": status,
       "ffe": ffe,
-      "password": password
+      "password": password,
+      "creation_date": date
     });
   }
 
@@ -57,8 +60,8 @@ class MongoDatabase {
     return user;
   }
 
-  createClass(userId, String discipline, String field, String className,
-      int duration, DateTime date, hour) async {
+  createClass(userId, userName, String discipline, String field,
+      String className, int duration, DateTime date, hour) async {
     /// Crée un cours dans la base de donnée
     collectionCours?.insertOne({
       "date": date,
@@ -74,11 +77,16 @@ class MongoDatabase {
     var cours = await collectionCours?.findOne(
         where.eq("creator", userId).eq("date", date).eq("hour", hour));
     // Ajoute l'utilisateur en tant que participant
-    collectionParticipations
-        ?.insertOne({"user": userId, "event": cours?["_id"], "type": "class"});
+    collectionParticipations?.insertOne({
+      "user": userId,
+      "event": cours?["_id"],
+      "type": "class",
+      "commentary": "",
+      "user_name": userName
+    });
   }
 
-  createCompetition(userId, name, date, adress, image) async {
+  createCompetition(userId, userName, name, date, adress, image) async {
     /// Crée une competition dans la base de donnée
     collectionCompetition?.insertOne({
       "name": name,
@@ -90,11 +98,17 @@ class MongoDatabase {
     var competition = await collectionCompetition?.findOne(
         where.eq("creator", userId).eq("date", date).eq("adress", adress));
     // Ajoute l'utilisateur en tant que participant
-    collectionParticipations?.insertOne(
-        {"user": userId, "event": competition?["_id"], "type": "competition"});
+    collectionParticipations?.insertOne({
+      "user": userId,
+      "event": competition?["_id"],
+      "type": "competition",
+      "commentary": "",
+      "user_name": userName
+    });
   }
 
-  createParty(userId, type, name, hour, description, date, image) async {
+  createParty(
+      userId, userName, type, name, hour, description, date, image) async {
     /// Crée une soirée dans la base de donnée
     collectionSoirees?.insertOne({
       "creator": userId,
@@ -110,8 +124,13 @@ class MongoDatabase {
     var soiree = await collectionSoirees?.findOne(
         where.eq("creator", userId).eq("date", date).eq("hour", hour));
     // Ajoute l'utilisateur en tant que participant
-    collectionParticipations
-        ?.insertOne({"user": userId, "event": soiree?["_id"], "type": "party"});
+    collectionParticipations?.insertOne({
+      "user": userId,
+      "event": soiree?["_id"],
+      "type": "party",
+      "commentary": "",
+      "user_name": userName
+    });
   }
 
   getPlanning(userId) async {
@@ -129,7 +148,7 @@ class MongoDatabase {
       /// puis les ranger dans un dictionnaire :
       /// ( "date" : date de l'event, "info": informations de l'evenement)
       late var event;
-      Map planningInfo;
+      Map planningInfo = {};
       if (participation["type"] == "class") {
         event = await collectionCours
             ?.findOne(where.eq("_id", participation["event"]));
@@ -150,7 +169,7 @@ class MongoDatabase {
           "date": event["date"],
           "info": "$status | $name | $hour "
         };
-      } else {
+      } else if (participation["type"] == "competition") {
         event = await collectionCompetition
             ?.findOne(where.eq("_id", participation["event"]));
         var name = event["name"];
@@ -195,32 +214,34 @@ class MongoDatabase {
 
   getTimeline() async {
     /// Récupère tous les évenements existants triés par date
-    var participations = await collectionParticipations?.find().toList();
 
     List events = [];
 
-    for (var participation in participations!) {
-      late var event;
-      Map planningInfo;
-      if (participation["type"] == "class") {
-        event = await collectionCours
-            ?.findOne(where.eq("_id", participation["event"]));
+    Map planningInfo = {};
 
+    List listClass = (await collectionCours?.find().toList())!;
+    for (var event in listClass) {
+      if (event["date"].compareTo(DateTime.now()) >= 0) {
         planningInfo = {"date": event["date"], "info": event};
-      } else if (participation["type"] == "party") {
-        event = await collectionSoirees
-            ?.findOne(where.eq("_id", participation["event"]));
-
-        planningInfo = {"date": event["date"], "info": event};
-      } else {
-        event = await collectionCompetition
-            ?.findOne(where.eq("_id", participation["event"]));
-        planningInfo = {"date": event["date"], "info": event};
+        events.add(planningInfo);
       }
-      events.add(planningInfo);
     }
-    events.sort((a, b) => a["date"].compareTo(b["date"]));
+    List listCompetition = (await collectionCompetition?.find().toList())!;
+    for (var event in listCompetition) {
+      if (event["date"].compareTo(DateTime.now()) >= 0) {
+        planningInfo = {"date": event["date"], "info": event};
+        events.add(planningInfo);
+      }
+    }
+    List listParty = (await collectionSoirees?.find().toList())!;
+    for (var event in listParty) {
+      if (event["date"].compareTo(DateTime.now()) >= 0) {
+        planningInfo = {"date": event["date"], "info": event};
+        events.add(planningInfo);
+      }
+    }
 
+    events.sort((a, b) => a["date"].compareTo(b["date"]));
     return events;
   }
 
@@ -228,11 +249,43 @@ class MongoDatabase {
     var x = await collectionParticipations?.findOne(
         where.eq("user", userId).eq("event", eventId).eq("type", type));
 
-    if (x?["user"] == null){
+    if (x?["user"] == null) {
       return false;
-    }
-    else {
+    } else {
       return true;
     }
+  }
+
+  getParticipations(eventId) async {
+    var x = await collectionParticipations
+        ?.find(where.eq("event", eventId))
+        .toList();
+    return x;
+  }
+
+  createParticipation(userId, userName, eventId, type, commentary) {
+    collectionParticipations?.insertOne({
+      "user": userId,
+      "event": eventId,
+      "type": type,
+      "commentary": commentary,
+      "user_name": userName
+    });
+  }
+
+  createParticipationCompetition(
+      userId, userName, eventId, type, commentary, level) {
+    collectionParticipations?.insertOne({
+      "user": userId,
+      "event": eventId,
+      "type": type,
+      "commentary": commentary,
+      "user_name": userName,
+      "level": level
+    });
+  }
+
+  cancelParticipation(userId, eventId) {
+    collectionParticipations?.deleteOne({"user": userId, "event": eventId});
   }
 }

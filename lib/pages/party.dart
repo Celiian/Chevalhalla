@@ -28,6 +28,7 @@ class _PartyPageState extends State<PartyPage> {
   var hour = "";
   final commentaryController = TextEditingController();
   var participation;
+  List participations = [];
 
   _PartyPageState(new_event) {
     event = new_event;
@@ -37,7 +38,8 @@ class _PartyPageState extends State<PartyPage> {
   void initState() {
     super.initState();
     getParticipation();
-    event = event["info"];
+
+    commentaryController.text = "";
 
     date = event["date"].toString().split(" ")[0];
     date =
@@ -48,7 +50,10 @@ class _PartyPageState extends State<PartyPage> {
 
   getParticipation() async {
     participation = await MongoDatabase()
-        .checkParticipation(User.id, event["info"]["_id"], event["info"]["event_type"]);
+        .checkParticipation(User.id, event["_id"], event["event_type"]);
+    participations = await MongoDatabase().getParticipations(event["_id"]);
+
+    setState(() {});
   }
 
   void onTabTapped(int index) {
@@ -71,7 +76,7 @@ class _PartyPageState extends State<PartyPage> {
   }
 
   openModal(checkParticipation) {
-    print(checkParticipation);
+    setState(() {});
     return showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
@@ -79,7 +84,7 @@ class _PartyPageState extends State<PartyPage> {
           height: 400,
           child: Center(
             child: (!checkParticipation)
-            // Vérifie si l'utilisateur participe déja à l'evenement ou non
+                // Vérifie si l'utilisateur participe déja à l'evenement ou non
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
@@ -115,7 +120,18 @@ class _PartyPageState extends State<PartyPage> {
                               onPressed: () => Navigator.pop(context),
                             ),
                             ElevatedButton(
-                                onPressed: () => {},
+                                onPressed: () => {
+                                      MongoDatabase().createParticipation(
+                                          User.id,
+                                          User.name,
+                                          event["_id"],
+                                          event["event_type"],
+                                          commentaryController.text),
+                                      setState(() {
+                                        participation = true;
+                                      }),
+                                      Navigator.pop(context),
+                                    },
                                 child: const Text(
                                   "Valider",
                                 ))
@@ -130,6 +146,30 @@ class _PartyPageState extends State<PartyPage> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                  foregroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.white),
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.red),
+                                  shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.zero,
+                                          side:
+                                              BorderSide(color: Colors.red)))),
+                              child: const Text('Annuler participation'),
+                              onPressed: () => {
+                                MongoDatabase()
+                                    .cancelParticipation(User.id, event["_id"]),
+                                setState(() {
+                                  participation = false;
+                                }),
+                                Navigator.pop(context)
+                              },
+                            ),
                             ElevatedButton(
                               child: const Text('Retour'),
                               onPressed: () => Navigator.pop(context),
@@ -207,7 +247,35 @@ class _PartyPageState extends State<PartyPage> {
                   child: Text("Particier".toUpperCase(),
                       style: const TextStyle(fontSize: 14)))
             ],
-          )
+          ),
+          const Text(
+            "Commentaires",
+            style: TextStyle(height: 3, fontSize: 23),
+          ),
+          Container(
+            height: 150,
+            child: ListView.builder(
+                padding: const EdgeInsets.all(8),
+                itemCount: participations.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                      padding: const EdgeInsets.all(10),
+                      child: Card(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                if (participations[index]["commentary"] != "")
+                                  Text(participations[index]["user_name"] +
+                                      " : " +
+                                      participations[index]["commentary"]),
+                              ],
+                            )
+                          ],
+                        ),
+                      ));
+                }),
+          ),
         ],
       )),
       bottomNavigationBar: BottomNavigationBar(

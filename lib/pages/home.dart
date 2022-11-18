@@ -9,6 +9,7 @@ import 'package:chevalhalla/widgets/timeline_cards.dart';
 import 'package:flutter/material.dart';
 
 import '../classes/user.dart';
+import 'competition.dart';
 
 class HomePage extends StatefulWidget {
   static const tag = "home_page";
@@ -90,7 +91,13 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) =>
-                              PartyPage(event: events[index])));
+                              PartyPage(event: events[index]["info"])));
+                    }
+                    else   if (events[index]["info"]["event_type"] == "competition") {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              CompetitionPage(event: events[index]["info"])));
                     }
                   },
                   child: Container(

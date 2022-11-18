@@ -1,3 +1,4 @@
+import 'package:chevalhalla/pages/competition.dart';
 import 'package:chevalhalla/pages/planning.dart';
 import 'package:flutter/material.dart';
 import 'pages/home.dart';
@@ -46,7 +47,7 @@ class MyApp extends StatelessWidget {
           HomePage.tag: (context) => const HomePage(),
           Planning.tag: (context) => const Planning(),
           PartyPage.tag: (context) => const PartyPage(event: null),
-
+          CompetitionPage.tag: (context) => const CompetitionPage(event: null),
         },
       ),
     );

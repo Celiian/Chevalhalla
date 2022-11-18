@@ -173,6 +173,7 @@ class ModalEvent {
                 onPressed: () {
                   MongoDatabase().createParty(
                     User.id,
+                    User.name,
                     typeController.text,
                     nameController.text,
                     hourController.text,
@@ -317,7 +318,7 @@ class ModalEvent {
                         initialTime: TimeOfDay.fromDateTime(
                             currentValue ?? DateTime.now()),
                       );
-                      disciplineController.text =
+                      hourController.text =
                           DateTimeField.convert(time).toString();
                       return DateTimeField.convert(time);
                     },
@@ -336,6 +337,7 @@ class ModalEvent {
                 onPressed: () {
                   MongoDatabase().createClass(
                       User.id,
+                      User.name,
                       disciplineController.text,
                       fieldController.text,
                       nameController.text,
@@ -444,6 +446,7 @@ class ModalEvent {
                 onPressed: () {
                   MongoDatabase().createCompetition(
                       User.id,
+                      User.name,
                       nameController.text,
                       DateTime.parse(dateController.text),
                       adressController.text,
