@@ -323,9 +323,21 @@ class MongoDatabase {
   }
 
   getHorses(owner) async {
-    var horses =
-        await collectionChevaux?.find(where.eq("owner", owner)).toList();
-    return horses;
+    Map Allhorses = {};
+    var horses = await collectionChevaux?.find(where.eq("owner", owner)).toList();
+    Allhorses.addAll({
+      "owned" : horses
+    });
+
+    var dp = await collectionDemiPensionnaires?.find(where.eq("user", owner)).toList();
+    var horse = [];
+    for (var singleDp in dp!){
+      horse.add(await collectionChevaux?.findOne(where.eq("_id", singleDp["horse"])));
+    }
+    Allhorses.addAll({
+      "dp" : horse
+    });
+    return Allhorses;
   }
 
   createHorse(name, image, birthdate, breed, discipline, color, genre, owner) {

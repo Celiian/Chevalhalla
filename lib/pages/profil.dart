@@ -21,8 +21,8 @@ class ProfilPage extends StatefulWidget {
 
 class _ProfilState extends State<ProfilPage> {
   int _currentIndex = 2;
-  List horses = [];
-
+  List horsesOwned = [];
+  List horseDp = [];
   @override
   void initState() {
     super.initState();
@@ -31,7 +31,9 @@ class _ProfilState extends State<ProfilPage> {
 
 
   getHorses() async {
-    horses = await MongoDatabase().getHorses(User.id);
+    var horses = await MongoDatabase().getHorses(User.id);
+    horsesOwned = horses["owned"];
+    horseDp = horses["dp"];
     setState(() {});
   }
 
@@ -157,31 +159,58 @@ class _ProfilState extends State<ProfilPage> {
                               },
                             ),
                           ]),
-                      Container(
-                        height: 400,
-                        child: ListView.builder(
-                          itemCount: horses.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 12.0,
-                                vertical: 4.0,
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(),
-                              ),
-                              child: ListTile(
-                                onTap: () => print(horses[index]),
-                                title: Text("Nom : " +
-                                    horses[index]["name"] +
-                                    " | breed : " +
-                                    horses[index]["breed"] +
-                                    " - Vous en êtes propriétaire"),
-                              ),
-                            );
-                          },
+                      if (horsesOwned.isNotEmpty)
+                        SizedBox(
+                          height: 400,
+                          child: ListView.builder(
+                            itemCount: horsesOwned.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 12.0,
+                                  vertical: 4.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(),
+                                ),
+                                child: ListTile(
+                                  onTap: () => print(horsesOwned[index]),
+                                  title: Text("Nom : " +
+                                      horsesOwned[index]["name"] +
+                                      " | breed : " +
+                                      horsesOwned[index]["breed"] +
+                                      " - Vous en êtes propriétaire"),
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                      ),
+                      if (horseDp.isNotEmpty)
+                        SizedBox(
+                          height: 400,
+                          child: ListView.builder(
+                            itemCount: horseDp.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 12.0,
+                                  vertical: 4.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(),
+                                ),
+                                child: ListTile(
+                                  onTap: () => print(horseDp[index]),
+                                  title: Text("Nom : " +
+                                      horseDp[index]["name"] +
+                                      " | breed : " +
+                                      horseDp[index]["breed"] +
+                                      " - Vous êtes en demi-pension"),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                     ],
                   ),
                 ))
