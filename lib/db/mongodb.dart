@@ -151,15 +151,11 @@ class MongoDatabase {
       late var event;
       Map planningInfo = {};
       if (participation["type"] == "class") {
-        print(participation["event"]);
-        print(await collectionCours
-            ?.findOne(where.eq("_id", participation["event"])));
         event = await collectionCours
             ?.findOne(where.eq("_id", participation["event"]));
         var name = event["name"];
         var status = event["status"];
-        var hour = event["hour"].toString().split(" ")[1].split(".")[0];
-        hour = "${hour.split(":")[0]}:${hour.split(":")[1]}";
+        var hour = event["hour"];
         planningInfo = {
           "date": event["date"],
           "info": "$status | $name | $hour "
@@ -322,7 +318,7 @@ class MongoDatabase {
     return horses;
   }
 
-  getHorses(owner) async {
+  getHorsesOwner(owner) async {
     Map Allhorses = {};
     var horses = await collectionChevaux?.find(where.eq("owner", owner)).toList();
     Allhorses.addAll({
@@ -356,4 +352,42 @@ class MongoDatabase {
   addDp(userId, horseId) {
     collectionDemiPensionnaires?.insertOne({"user": userId, "horse": horseId});
   }
+  getClasses() async{
+    return await collectionCours?.find().toList();
+  }
+
+  getParties() async{
+    return await collectionSoirees?.find().toList();
+  }
+
+  getCompetitions() async{
+    return await collectionCompetition?.find().toList();
+  }
+
+  getUsers() async {
+    return await collectionUtilisateurs?.find().toList();
+  }
+
+  getParticipationClass(classId) async {
+    return await collectionParticipations?.findOne(where.eq("event", classId));
+  }
+
+  getHorses() async {
+    return await collectionChevaux?.find();
+  }
+
+
+  acceptClass(classId) {
+    collectionCours?.update(
+        where.eq("_id", classId), modify.set('status', "Accepté"));
+  }
+
+  refuseClass(classId) {
+    collectionCours?.update(
+        where.eq("_id", classId), modify.set('status', "Refusé"));
+  }
+
+
 }
+
+

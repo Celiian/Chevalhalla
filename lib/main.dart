@@ -2,6 +2,7 @@
 
 import 'package:chevalhalla/pages/competition.dart';
 import 'package:chevalhalla/pages/horse_dp.dart';
+import 'package:chevalhalla/pages/admin/Index_Admin.dart';
 import 'package:chevalhalla/pages/planning.dart';
 import 'package:chevalhalla/pages/profil.dart';
 import 'package:flutter/material.dart';
@@ -37,23 +38,24 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         primarySwatch: Colors.blue,
       ),
-      //thème par défaut
       initial: AdaptiveThemeMode.light,
       builder: (theme, darkTheme) => MaterialApp(
         title: 'Chevalhalla',
-        theme: theme,
         darkTheme: darkTheme,
-        home: const LoginPage(title: 'Connexion'),
+          theme: theme,
+          home: const LoginPage(title: 'Connexion'),
         routes: {
           RegisterPage.tag: (context) => const RegisterPage(),
           HomePage.tag: (context) => const HomePage(),
-          Planning.tag: (context) => const Planning(),
+          PlanningPage.tag: (context) => const PlanningPage(),
           PartyPage.tag: (context) => const PartyPage(event: null),
           CompetitionPage.tag: (context) => const CompetitionPage(event: null),
           ProfilPage.tag: (context) => const ProfilPage(),
           HorseDpPage.tag: (context) => const HorseDpPage(),
-        },
-      ),
+
+        IndexAdmin.tag: (context) => const IndexAdmin(),
+      },
+    ),
     );
   }
 }

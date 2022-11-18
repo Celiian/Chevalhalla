@@ -6,20 +6,21 @@ import 'package:chevalhalla/pages/home.dart';
 import 'package:chevalhalla/pages/profil.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-
 import '../widgets/modal_event.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:chevalhalla/widgets/modal_event.dart';
+import 'admin/Index_Admin.dart';
 
-class Planning extends StatefulWidget {
+class PlanningPage extends StatefulWidget {
   static const tag = "planning_page";
 
-  const Planning({super.key});
+  const PlanningPage({super.key});
 
   @override
-  State<Planning> createState() => _PlanningState();
+  State<PlanningPage> createState() => _PlanningPageState();
 }
 
-class _PlanningState extends State<Planning> {
+class _PlanningPageState extends State<PlanningPage> {
   late ValueNotifier<List<String>> _selectedEvents;
   Map<DateTime, List<String>> events = {};
 
@@ -102,17 +103,44 @@ class _PlanningState extends State<Planning> {
     // Gère les "tap" sur la bottom nav pour rediriger entre les différentes pages
     setState(() {
       _currentIndex = index;
-      if (_currentIndex == 0) {
-        Navigator.of(context)
-            .pushNamed(HomePage.tag)
-            .then((_) => setState(() {}));
-      } else if (_currentIndex == 1) {
-      } else if (_currentIndex == 2) {
-        Navigator.of(context)
-            .pushNamed(ProfilPage.tag)
-            .then((_) => setState(() {}));
+      if(User.status == 'Cavalier'){
+
+        if (_currentIndex == 0) {
+          //Page d'accueil
+          Navigator.of(context)
+              .pushNamed(HomePage.tag)
+              .then((_) => setState(() {}));
+        } else if (_currentIndex == 1) {
+          Navigator.of(context)
+              .pushNamed(PlanningPage.tag)
+              .then((_) => setState(() {}));      }
+        else if (_currentIndex == 2) {
+          //page profil utilisateur
+        }
       }
-    });
+      else {
+        if (_currentIndex == 0) {
+          //Page d'accueil
+          Navigator.of(context)
+              .pushNamed(HomePage.tag)
+              .then((_) => setState(() {}));
+        } else if (_currentIndex == 1) {
+        }
+        else if (_currentIndex == 2) {
+          //page profil utilisateur
+          Navigator.of(context)
+              .pushNamed(IndexAdmin.tag)
+              .then((_) => setState(() {}));
+        }
+        else if (_currentIndex == 3) {
+          //page profil utilisateur
+          Navigator.of(context)
+              .pushNamed(ProfilPage.tag)
+              .then((_) => setState(() {}));
+        }
+      }
+    }
+    );
   }
 
   @override
@@ -196,21 +224,20 @@ class _PlanningState extends State<Planning> {
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.blue,
+        selectedItemColor: Colors.black,
         onTap: onTabTapped,
         currentIndex: _currentIndex, // new
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: 'Planning',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profil',
-          )
+        items:  [
+          if (User.status == 'admin')...
+          [BottomNavigationBarItem(icon: Icon(Icons.home), label: "Accueil",backgroundColor: Colors.blue,tooltip: "Accueil"),
+            BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: "Planning",backgroundColor: Colors.blue,tooltip: "Planning"),
+            BottomNavigationBarItem(icon: Icon(Icons.settings), label: "admin",backgroundColor: Colors.blue,tooltip: "admin"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil",backgroundColor: Colors.blue,tooltip: "Profil")]
+          else ...
+          [BottomNavigationBarItem(icon: Icon(Icons.home), label: "Accueil",),
+            BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: "Planning"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil")]
         ],
       ),
     );

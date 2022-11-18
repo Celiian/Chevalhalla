@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../classes/user.dart';
 import '../db/mongodb.dart';
+import 'admin/Index_Admin.dart';
 
 class ProfilPage extends StatefulWidget {
   static const tag = "profil_page";
@@ -23,36 +24,64 @@ class _ProfilState extends State<ProfilPage> {
   int _currentIndex = 2;
   List horsesOwned = [];
   List horseDp = [];
+
   @override
   void initState() {
     super.initState();
     getHorses();
+
+    if(User.status == "admin"){
+      _currentIndex = 3;
+    }
   }
 
-
   getHorses() async {
-    var horses = await MongoDatabase().getHorses(User.id);
+    var horses = await MongoDatabase().getHorsesOwner(User.id);
     horsesOwned = horses["owned"];
     horseDp = horses["dp"];
     setState(() {});
   }
 
   void onTabTapped(int index) {
+    // Gère les "tap" sur la bottom nav pour rediriger entre les différentes pages
     setState(() {
       _currentIndex = index;
-      if (_currentIndex == 0) {
-        Navigator.of(context)
-            .pushNamed(
-              HomePage.tag,
-            )
-            .then((_) => setState(() {}));
-      } else if (_currentIndex == 1) {
-        Navigator.of(context)
-            .pushNamed(
-              Planning.tag,
-            )
-            .then((_) => setState(() {}));
-      } else if (_currentIndex == 2) {}
+      if (User.status == 'Cavalier') {
+        if (_currentIndex == 0) {
+          //Page d'accueil
+          Navigator.of(context)
+              .pushNamed(HomePage.tag)
+              .then((_) => setState(() {}));
+        } else if (_currentIndex == 1) {
+          Navigator.of(context)
+              .pushNamed(PlanningPage.tag)
+              .then((_) => setState(() {}));
+        } else if (_currentIndex == 2) {
+          //page profil utilisateur
+        }
+      } else {
+        if (_currentIndex == 0) {
+          //Page d'accueil
+          Navigator.of(context)
+              .pushNamed(HomePage.tag)
+              .then((_) => setState(() {}));
+        } else if (_currentIndex == 1) {
+          //Page planning
+          Navigator.of(context)
+              .pushNamed(PlanningPage.tag)
+              .then((_) => setState(() {}));
+        } else if (_currentIndex == 2) {
+          //page profil utilisateur
+          Navigator.of(context)
+              .pushNamed(IndexAdmin.tag)
+              .then((_) => setState(() {}));
+        } else if (_currentIndex == 3) {
+          //page profil utilisateur
+          Navigator.of(context)
+              .pushNamed(ProfilPage.tag)
+              .then((_) => setState(() {}));
+        }
+      }
     });
   }
 
@@ -152,7 +181,7 @@ class _ProfilState extends State<ProfilPage> {
                               onPressed: () {
                                 Navigator.of(context)
                                     .pushNamed(
-                                  HorseDpPage.tag,
+                                      HorseDpPage.tag,
                                     )
                                     .then((_) => setState(() {}));
                                 setState(() {});
@@ -218,21 +247,39 @@ class _ProfilState extends State<ProfilPage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.blue,
+        selectedItemColor: Colors.black,
         onTap: onTabTapped,
-        currentIndex: _currentIndex, // new
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: 'Planning',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          )
+        currentIndex: _currentIndex,
+        // new
+        items: [
+          if (User.status == 'admin') ...[
+            const BottomNavigationBarItem(
+                icon: Icon(Icons.home), label: "Accueil", tooltip: "Accueil"),
+            const BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_today),
+                label: "Planning",
+                backgroundColor: Colors.blue,
+                tooltip: "Planning"),
+            const BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: "admin",
+                backgroundColor: Colors.blue,
+                tooltip: "admin"),
+            const BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: "Profil",
+                backgroundColor: Colors.blue,
+                tooltip: "Profil")
+          ] else ...[
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: "Accueil",
+            ),
+            const BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_today), label: "Planning"),
+            const BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil")
+          ]
         ],
       ),
     );

@@ -64,7 +64,7 @@ class _CompetitionPageState extends State<CompetitionPage> {
             .then((_) => setState(() {}));
       } else if (_currentIndex == 1) {
         Navigator.of(context)
-            .pushNamed(Planning.tag)
+            .pushNamed(PlanningPage.tag)
             .then((_) => setState(() {}));
       } else if (_currentIndex == 2) {
         //Profile page navigator

@@ -52,7 +52,7 @@ class _HorseDpPageState extends State<HorseDpPage> {
         //Home page navigator
       } else if (_currentIndex == 1) {
         Navigator.of(context)
-            .pushNamed(Planning.tag)
+            .pushNamed(PlanningPage.tag)
             .then((_) => setState(() {}));
       } else if (_currentIndex == 2) {
         Navigator.of(context)
