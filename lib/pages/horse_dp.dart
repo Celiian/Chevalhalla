@@ -20,6 +20,7 @@ class HorseDpPage extends StatefulWidget {
 class _HorseDpPageState extends State<HorseDpPage> {
   int _currentIndex = 2;
   List allHorses = [];
+  List dpHorses = [];
 
   getAllHorses() async {
     allHorses = await MongoDatabase().getAllHorses();
@@ -29,6 +30,10 @@ class _HorseDpPageState extends State<HorseDpPage> {
         allHorses.remove(horse);
       }
     }
+
+    dpHorses = await MongoDatabase().getDpId(User.id);
+
+    print(allHorses.length);
     setState(() {});
   }
 
@@ -99,7 +104,8 @@ class _HorseDpPageState extends State<HorseDpPage> {
                           ),
                           child: ListTile(
                             onTap: () => {
-                              ModalHorse().ChooseHorse(context, allHorses[index])
+                              ModalHorse()
+                                  .ChooseHorse(context, allHorses[index], dpHorses)
                             },
                             title: Text(
                                 "${"Nom : " + allHorses[index]["name"]} | breed : " +

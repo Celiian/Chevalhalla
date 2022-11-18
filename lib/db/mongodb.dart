@@ -118,7 +118,8 @@ class MongoDatabase {
       "description": description,
       "date": date,
       "image": image,
-      "status": "En attente"
+      "status": "En attente",
+      "user_name": userName
     });
 
     var soiree = await collectionSoirees?.findOne(
@@ -310,6 +311,17 @@ class MongoDatabase {
     return horses;
   }
 
+
+  getDpId(userId) async {
+    var dp = await collectionDemiPensionnaires?.find(where.eq("user", userId)).toList();
+    List horses = [];
+    for (var singleDp in dp!){
+      var horse = (await collectionChevaux?.findOne(where.eq("_id", singleDp["horse"])));
+      horses.add(horse?["_id"]);
+    }
+    return horses;
+  }
+
   getHorses(owner) async {
     var horses =
         await collectionChevaux?.find(where.eq("owner", owner)).toList();
@@ -324,7 +336,7 @@ class MongoDatabase {
       "breed": breed,
       "speciality": discipline,
       "coatColor": color,
-      "genre": genre,
+      "gender": genre,
       "owner": owner
     });
   }

@@ -160,7 +160,7 @@ class ModalHorse {
         });
   }
 
-  ChooseHorse(BuildContext context, horse) {
+  ChooseHorse(BuildContext context, horse, dpHorses) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -180,24 +180,33 @@ class ModalHorse {
                     Text("Discipline favorite :" + horse["speciality"]),
                     Text("Genre :" + horse["gender"]),
                     Text("Propriétaire :" + horse["owner_name"]),
-
                   ],
                 ),
-                Row(children: [
+                if (!dpHorses.contains(horse["_id"]))
+                  Row(children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Annuler'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        MongoDatabase().addDp(User.id, horse["_id"]);
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Ajouter'),
+                    ),
+                  ]),
+                if (dpHorses.contains(horse["_id"]))
                   TextButton(
                     onPressed: () {
-                      MongoDatabase().addDp(User.id, horse["_id"]);
                       Navigator.of(context).pop();
                     },
                     child: const Text('Annuler'),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Ajouter'),
-                  ),
-                ]),
+                if (dpHorses.contains(horse["_id"]))
+                  const Text("Vous avez déjà ce cheval en demi-pension")
               ],
             ),
           );
