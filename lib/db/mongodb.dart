@@ -388,6 +388,16 @@ class MongoDatabase {
   }
 
 
+  acceptParty(partyId) {
+    collectionSoirees?.update(
+        where.eq("_id", partyId), modify.set('status', "Accepté"));
+  }
+
+  refuseParty(partyId) {
+    collectionSoirees?.update(
+        where.eq("_id", partyId), modify.set('status', "Refusé"));
+  }
+
 }
 
 

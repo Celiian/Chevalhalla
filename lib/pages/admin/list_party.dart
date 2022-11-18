@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison, library_private_types_in_public_api, non_constant_identifier_names, unnecessary_import, prefer_interpolation_to_compose_strings
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +34,7 @@ class _ListPartyState extends State<ListParty> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Liste des Soirées"),
+          title: const Text("Liste des Soirées"),
         ),
         body: Center(
           child: Container(
@@ -49,7 +51,7 @@ class _ListPartyState extends State<ListParty> {
                   );
                 },
               )
-                  : Text("Il n'y pas de Soirée de prévue ")),
+                  : const Text("Il n'y pas de Soirée de prévue ")),
         ));
   }
 }
@@ -90,28 +92,41 @@ class _ListPartyState extends State<ListParty> {
                     color: Colors.black,
                     fontSize: 15,
                     fontWeight: FontWeight.bold)),
+            Text("Status : " + soirees["status"],
+                style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold)),
             Padding(
               padding: const EdgeInsets.only(bottom: 8.0, top: 30.0),
               child: Row(
                 children: [
-                  TextButton(
-                      child: const Text("Refuser",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      }),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: TextButton(
-                      child: const Text("Valider",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+                  if (soirees["status"] == "En attente" || soirees["status"] == "Refusé")
+                    Padding(
+                      padding: const EdgeInsets.only(left: 90.0),
+                      child: TextButton(
+                        child: const Text("Valider",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold)),
+                        onPressed: () {
+                          MongoDatabase().acceptParty(soirees["_id"]);
+                          Navigator.of(context).pop();
+                        },
+                      ),
                     ),
-                  ),
+                  if (soirees["status"] == "Accepté")
+                    Padding(
+                      padding: const EdgeInsets.only(left: 90.0),
+                      child: TextButton(
+                        child: const Text("Refuser",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold)),
+                        onPressed: () {
+                          MongoDatabase().refuseParty(soirees["_id"]);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
                 ],
               ),
             )

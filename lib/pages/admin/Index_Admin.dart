@@ -67,7 +67,7 @@ class _IndexAdminState extends State<IndexAdmin> {
               },
             ),
             ListTile(
-              title: const Text('Liste des chevaux',
+              title: const Text('Liste des Chevalkyries',
                 style: TextStyle(fontSize: 18,
                   color: Colors.blue,
                   fontWeight: FontWeight.bold,
