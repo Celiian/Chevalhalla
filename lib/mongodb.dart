@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'dart:math';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:flutter/material.dart';
+import 'classes/user.dart';
 import 'constant.dart';
 
 class MongoDatabase {
@@ -40,5 +41,12 @@ class MongoDatabase {
     var user = await collectionUtilisateurs?.findOne(where.eq("mail", mail).eq("password", password));
     return user;
   }
+
+  getHorses(owner) {
+    var horses = collectionChevaux?.find(where.eq("owner", owner )).toList();
+    print(horses);
+    return horses;
+  }
+
 
 }

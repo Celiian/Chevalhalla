@@ -24,3 +24,25 @@ class User {
     linkFFE = json["ffe"];
   }
 }
+
+
+class Horse {
+  static var name = "";
+  static var birthdate = DateTime.utc(2000, 12, 31);
+  static var coatColor = "";
+  static var gender = "";
+  static String profilePicture = "";
+  static var speciality = "";
+  static var owner = "";
+
+  decodeJson(json) {
+    name = json?["name"];
+    coatColor = json?["mail"];
+    gender = json?["password"];
+    speciality = json["level"];
+    birthdate = json["birthdate"];
+    profilePicture = json["profil_picture"];
+    owner = json["status"];
+  }
+}
+
