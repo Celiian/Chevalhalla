@@ -214,7 +214,7 @@ class MongoDatabase {
 
   getTimeline() async {
     /// Récupère tous les évenements existants triés par date
-
+    /// Ainsi que les utilisateurs crée
     List events = [];
 
     Map planningInfo = {};
@@ -237,6 +237,15 @@ class MongoDatabase {
     for (var event in listParty) {
       if (event["date"].compareTo(DateTime.now()) >= 0) {
         planningInfo = {"date": event["date"], "info": event};
+        events.add(planningInfo);
+      }
+    }
+    List listUsers = (await collectionUtilisateurs?.find().toList())!;
+    for (var user in listUsers) {
+      if (user["creation_date"].compareTo(DateTime.now()) >= 0 ||
+          user["creation_date"].compareTo(DateTime.now().add(const Duration(days: 1))) >= 0) {
+        user["date"] = user["creation_date"];
+        planningInfo = {"date": user["date"], "info": user};
         events.add(planningInfo);
       }
     }

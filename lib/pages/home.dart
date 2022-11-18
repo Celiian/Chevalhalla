@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
       }
 
       for (var event in events) {
-        cardList.add(timeline_card(event));
+        cardList.add(timeline_card(event["info"]));
       }
     });
   }
