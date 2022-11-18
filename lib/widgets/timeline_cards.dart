@@ -10,6 +10,7 @@ class timeline_card extends StatelessWidget {
 
   timeline_card(new_event, {super.key}) {
     event = new_event;
+    print(event);
   }
 
   @override
