@@ -135,7 +135,9 @@ class _ProfilState extends State<ProfilPage> {
                             children: [
                               TextButton(
                                 child: const Text("Editer profil"),
-                                onPressed: () {},
+                                onPressed: () {
+                                  _EditProfile(context);
+                                },
                               ),
                               TextButton(
                                 child: const Text("Déconnexion"),
@@ -284,4 +286,79 @@ class _ProfilState extends State<ProfilPage> {
       ),
     );
   }
+}
+
+
+void _EditProfile(BuildContext context) {
+  var _nameController = TextEditingController();
+  var _mailController = TextEditingController();
+  var _levelController = TextEditingController();
+  var _passwordController = TextEditingController();
+  var _lienFfeController = TextEditingController();
+  var _pictureController = TextEditingController();
+
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Editer profil"),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                TextField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    hintText: "Nom",
+                  ),
+                ),
+                TextField(
+                  controller: _mailController,
+                  decoration: const InputDecoration(
+                    hintText: "mail",
+                  ),
+                ),
+                TextField(
+                  controller: _levelController,
+                  decoration: const InputDecoration(
+                    hintText: "Mon niveau",
+                  ),
+                ),
+                TextField(
+                  controller: _lienFfeController,
+                  decoration: const InputDecoration(
+                    hintText: "lien FFE",
+                  ),
+                ),
+                TextField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(
+                    hintText: "Mot de passe",
+                  ),
+                ),
+                TextField(
+                  controller: _pictureController,
+                  decoration: const InputDecoration(
+                    hintText: "Url Photo de profil",
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Annuler"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("Valider"),
+              onPressed: () {
+                User.name = _nameController.text;
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      });
 }
