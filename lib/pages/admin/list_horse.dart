@@ -43,11 +43,57 @@ class _ListHorsesState extends State<ListHorses> {
                     itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(HorseList[index]['name']),
-                    subtitle: Text(HorseList[index]['race']),
+                    onTap: () {
+                      _showDialog(HorseList[index], context);
+                    },
                   );
                 },
               )
                   : Text("Il n'y pas de chevaux ")),
         ));
   }
+}
+
+ void _showDialog (chevaux, context) {
+  var chevauxBirtday = chevaux["birthdate"].toString().split(" ")[0];
+  chevauxBirtday = "${chevauxBirtday.split("-")[2]}/${chevauxBirtday.split("-")[1]}/${chevauxBirtday.split("-")[0]}";
+
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text("Nom : " + chevaux["name"]), actions: <Widget>[
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.network(
+                    chevaux["image"], width: 100),
+              ),
+
+              Text("Genre : " + chevaux["gender"],
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold)),
+              Text("Race : " + chevaux["breed"],
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold)),
+              Text("Date de naissance :$chevauxBirtday",
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold)),
+              Text("Spécialité : " + chevaux["speciality"],
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold)),
+            ],
+          )
+        ],
+        );
+      });
 }
