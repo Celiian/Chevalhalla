@@ -5,10 +5,12 @@ import 'package:chevalhalla/classes/user.dart';
 import 'package:chevalhalla/db/mongodb.dart';
 import 'package:chevalhalla/pages/home.dart';
 import 'package:chevalhalla/pages/planning.dart';
+import 'package:chevalhalla/pages/profil.dart';
 import 'package:chevalhalla/widgets/timeline_cards.dart';
 import 'package:flutter/material.dart';
 
 import '../classes/user.dart';
+import 'admin/Index_Admin.dart';
 
 class PartyPage extends StatefulWidget {
   static const tag = "party_page";
@@ -60,19 +62,48 @@ class _PartyPageState extends State<PartyPage> {
     // Gère les "tap" sur la bottom nav pour rediriger entre les différentes pages
     setState(() {
       _currentIndex = index;
-
-      if (_currentIndex == 0) {
-        Navigator.of(context)
-            .pushNamed(HomePage.tag)
-            .then((_) => setState(() {}));
-      } else if (_currentIndex == 1) {
-        Navigator.of(context)
-            .pushNamed(PlanningPage.tag)
-            .then((_) => setState(() {}));
-      } else if (_currentIndex == 2) {
-        //Profile page navigator
+      if(User.status == 'Cavalier'){
+        if (_currentIndex == 0) {
+          //Page d'accueil
+          Navigator.of(context)
+              .pushNamed(HomePage.tag)
+              .then((_) => setState(() {}));
+        } else if (_currentIndex == 1) {
+          //page planning
+          Navigator.of(context)
+              .pushNamed(PlanningPage.tag)
+              .then((_) => setState(() {}));      }
+        else if (_currentIndex == 2) {
+          //page profil utilisateur
+          Navigator.of(context)
+              .pushNamed(ProfilPage.tag)
+              .then((_) => setState(() {}));
+        }
       }
-    });
+      else {
+        if (_currentIndex == 0) {
+          //Home page navigator
+          Navigator.of(context)
+              .pushNamed(HomePage.tag)
+              .then((_) => setState(() {}));
+        } else if (_currentIndex == 1) {
+          Navigator.of(context)
+              .pushNamed(PlanningPage.tag)
+              .then((_) => setState(() {}));
+        } else if (_currentIndex == 2) {
+          Navigator.of(context)
+              .pushNamed(IndexAdmin.tag)
+              .then((_) => setState(() {}));
+        }
+        else if (_currentIndex == 3) {
+          //Profile page navigator
+          Navigator.of(context)
+              .pushNamed(ProfilPage.tag)
+              .then((_) => setState(() {}));
+        }
+      }
+    }
+    );
   }
 
   openModal(checkParticipation) {
@@ -278,24 +309,44 @@ class _PartyPageState extends State<PartyPage> {
           ),
         ],
       )),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: onTabTapped,
-        currentIndex: _currentIndex, // new
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: 'Planning',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profil',
-          )
-        ],
-      ),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.blue,
+          selectedItemColor: Colors.black,
+          onTap: onTabTapped,
+          currentIndex: _currentIndex,
+          // new
+          items: [
+            if (User.status == 'admin')...
+            [
+              const BottomNavigationBarItem(icon: Icon(Icons.home),
+                  label: "Accueil",
+                  backgroundColor: Colors.blue,
+                  tooltip: "Accueil"),
+              const BottomNavigationBarItem(icon: Icon(Icons.calendar_today),
+                  label: "Planning",
+                  backgroundColor: Colors.blue,
+                  tooltip: "Planning"),
+              const BottomNavigationBarItem(icon: Icon(Icons.settings),
+                  label: "admin",
+                  backgroundColor: Colors.blue,
+                  tooltip: "admin"),
+              const BottomNavigationBarItem(icon: Icon(Icons.person),
+                  label: "Profil",
+                  backgroundColor: Colors.blue,
+                  tooltip: "Profil")
+            ]
+            else
+              ...
+              [
+                const BottomNavigationBarItem(
+                  icon: Icon(Icons.home), label: "Accueil",),
+                const BottomNavigationBarItem(
+                    icon: Icon(Icons.calendar_today), label: "Planning"),
+                const BottomNavigationBarItem(
+                    icon: Icon(Icons.person), label: "Profil")
+              ]
+          ],
+        )
     );
   }
 }

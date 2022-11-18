@@ -373,7 +373,7 @@ class MongoDatabase {
   }
 
   getHorses() async {
-    return await collectionChevaux?.find();
+    return await collectionChevaux?.find().toList();
   }
 
 
