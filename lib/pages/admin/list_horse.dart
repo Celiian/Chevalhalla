@@ -62,20 +62,23 @@ class _ListHorsesState extends State<ListHorses> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text("Nom : " + chevaux["name"]), actions: <Widget>[
+          content: Text("Nom : " + chevaux["name"],
+              style: TextStyle(fontSize: 20),
+              textAlign: TextAlign.center),
+          actions: <Widget>[
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(bottom: 10),
                 child: Image.network(
-                    chevaux["image"], width: 100),
+                    chevaux["image"], alignment: Alignment.center, width: 300, height: 300),
               ),
 
               Text("Genre : " + chevaux["gender"],
                   style: const TextStyle(
                       color: Colors.black,
                       fontSize: 15,
-                      fontWeight: FontWeight.bold)),
+                      fontWeight: FontWeight.bold,),),
               Text("Race : " + chevaux["breed"],
                   style: const TextStyle(
                       color: Colors.black,
@@ -86,11 +89,16 @@ class _ListHorsesState extends State<ListHorses> {
                       color: Colors.black,
                       fontSize: 15,
                       fontWeight: FontWeight.bold)),
-              Text("Spécialité : " + chevaux["speciality"],
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold)),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text("Spécialité : " + chevaux["speciality"],
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.right
+                ),
+              ),
             ],
           )
         ],

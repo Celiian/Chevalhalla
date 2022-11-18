@@ -74,14 +74,15 @@ class _ListUsersState extends State<ListUsers> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Image.network(
-                    user["profil_picture"], width: 100),
+                    user["profil_picture"], width: 100, alignment: Alignment.center),
               ),
 
               Text("Email : " + user["mail"],
+
                   style: const TextStyle(
                       color: Colors.black,
                       fontSize: 15,
-                      fontWeight: FontWeight.bold)),
+                      fontWeight: FontWeight.bold),),
               Text("Niveau : " + user["level"],
                   style: const TextStyle(
                       color: Colors.black,
