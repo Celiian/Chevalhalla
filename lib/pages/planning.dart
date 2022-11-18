@@ -7,6 +7,7 @@ import 'package:modals/modals.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../modal_event.dart';
+import 'admin/Index_Admin.dart';
 
 class Planning extends StatefulWidget {
   static const tag = "planning_page";
@@ -98,15 +99,38 @@ class _PlanningState extends State<Planning> {
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
-      if (_currentIndex == 0) {
-        Navigator.of(context)
-            .pushNamed(HomePage.tag)
-            .then((_) => setState(() {}));
-      } else if (_currentIndex == 1) {
-      } else if (_currentIndex == 2) {
-        //Profile page navigator
+      if(User.status == 'Cavalier'){
+
+        if (_currentIndex == 0) {
+          //Page d'accueil
+          Navigator.of(context)
+              .pushNamed(HomePage.tag)
+              .then((_) => setState(() {}));
+        } else if (_currentIndex == 1) {
+          Navigator.of(context)
+              .pushNamed(Planning.tag)
+              .then((_) => setState(() {}));      }
+        else if (_currentIndex == 2) {
+          //page profil utilisateur
+        }
       }
-    });
+      else {
+        if (_currentIndex == 0) {
+          //Page d'accueil
+          Navigator.of(context)
+              .pushNamed(HomePage.tag)
+              .then((_) => setState(() {}));
+        } else if (_currentIndex == 1) {
+          Navigator.of(context)
+              .pushNamed(Planning.tag)
+              .then((_) => setState(() {}));
+        }
+        else if (_currentIndex == 2) {
+          //page profil utilisateur
+        }
+      }
+    }
+    );
   }
 
   @override

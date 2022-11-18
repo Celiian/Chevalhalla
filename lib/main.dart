@@ -1,3 +1,4 @@
+import 'package:chevalhalla/pages/admin/Index_Admin.dart';
 import 'package:chevalhalla/pages/planning.dart';
 import 'package:flutter/material.dart';
 import 'pages/home.dart';
@@ -28,6 +29,8 @@ class MyApp extends StatelessWidget {
         HomePage.tag: (context) => const HomePage(),
         Planning.tag: (context) => const Planning(),
         RegisterPage.tag: (context) => const RegisterPage(),
+        IndexAdmin.tag: (context) => const IndexAdmin(),
+
       },
       theme: ThemeData(
         primarySwatch: Colors.orange,

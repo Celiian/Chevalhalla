@@ -3,6 +3,9 @@ import 'package:chevalhalla/classes/user.dart';
 import 'package:chevalhalla/db/mongodb.dart';
 import 'package:flutter/material.dart';
 
+import '../classes/user.dart';
+import 'admin/Index_Admin.dart';
+
 class HomePage extends StatefulWidget {
   static const tag = "home_page";
 
@@ -17,16 +20,36 @@ class _HomePageState extends State<HomePage> {
   final List _children = [];
 
   void onTabTapped(int index) {
+    // Gère les "tap" sur la bottom nav pour rediriger entre les différentes pages
     setState(() {
       _currentIndex = index;
-      if (_currentIndex == 0) {
-        //Home page navigator
-      } else if (_currentIndex == 1) {
-        Navigator.of(context)
-            .pushNamed(Planning.tag)
-            .then((_) => setState(() {}));      }
-      else if (_currentIndex == 2) {
-        //Profile page navigator
+
+      if (User.status == "Cavalier") {
+        if (_currentIndex == 0) {
+          //Home page navigator
+        } else if (_currentIndex == 1) {
+          Navigator.of(context)
+              .pushNamed(Planning.tag)
+              .then((_) => setState(() {}));
+        } else if (_currentIndex == 2) {
+          //Profile page navigator
+        }
+      }
+      else {
+        if (_currentIndex == 0) {
+          //Home page navigator
+        } else if (_currentIndex == 1) {
+          Navigator.of(context)
+              .pushNamed(Planning.tag)
+              .then((_) => setState(() {}));
+        } else if (_currentIndex == 2) {
+          Navigator.of(context)
+              .pushNamed(IndexAdmin.tag)
+              .then((_) => setState(() {}));
+        }
+        else if (_currentIndex == 2) {
+          //Profile page navigator
+        }
       }
     });
   }
@@ -53,14 +76,14 @@ class _HomePageState extends State<HomePage> {
         currentIndex: _currentIndex, // new
         items:  [
           if (User.status == 'admin')...
-          [BottomNavigationBarItem(icon: Icon(Icons.home), label: "Accueil",backgroundColor: Colors.orange,tooltip: "Accueil"),
-            BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: "Planning",backgroundColor: Colors.orange,tooltip: "Planning"),
-            BottomNavigationBarItem(icon: Icon(Icons.settings), label: "admin",backgroundColor: Colors.orange,tooltip: "admin"),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil",backgroundColor: Colors.orange,tooltip: "Profil")]
+          [const BottomNavigationBarItem(icon: Icon(Icons.home), label: "Accueil",backgroundColor: Colors.orange,tooltip: "Accueil"),
+            const BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: "Planning",backgroundColor: Colors.orange,tooltip: "Planning"),
+            const BottomNavigationBarItem(icon: Icon(Icons.settings), label: "admin",backgroundColor: Colors.orange,tooltip: "admin"),
+            const BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil",backgroundColor: Colors.orange,tooltip: "Profil")]
           else ...
-          [BottomNavigationBarItem(icon: Icon(Icons.home), label: "Accueil",),
-            BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: "Planning"),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil")]
+          [const BottomNavigationBarItem(icon: Icon(Icons.home), label: "Accueil",),
+            const BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: "Planning"),
+            const BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil")]
         ],
     )
     );

@@ -173,4 +173,30 @@ class MongoDatabase {
     }
     return map;
   }
+  getClasses() async{
+    return await collectionCours?.find().toList();
+  }
+
+  getParties() async{
+    return await collectionSoirees?.find().toList();
+  }
+
+  getCompetitions() async{
+    return await collectionCompetition?.find().toList();
+  }
+
+  getHorses() async{
+    return await collectionChevaux?.find().toList();
+  }
+
+  getUsers() async {
+    return await collectionUtilisateurs?.find().toList();
+  }
+
+  getParticipationClass(classId) async {
+    return await collectionParticipations?.findOne(where.eq("event", classId));
+  }
+
 }
+
+
