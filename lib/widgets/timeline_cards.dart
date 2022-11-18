@@ -18,12 +18,12 @@ class timeline_card extends StatelessWidget {
         child: Container(
             padding: const EdgeInsets.all(20),
             child: Column(children: [
-      if (event["event_type"] == "class")
-        _classCard(event)
-      else if (event["event_type"] == "competition")
-        _competitionCard(event)
-      else if (event["event_type"] == "party")
-        _partyCard(event)
+              if (event["event_type"] == "class")
+                _classCard(event)
+              else if (event["event_type"] == "competition")
+                _competitionCard(event)
+              else if (event["event_type"] == "party")
+                _partyCard(event)
     ])));
   }
 }
@@ -91,26 +91,28 @@ class _partyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Column(children: [
-          Image.network(
-            event["image"],
-            height: 80,
-            width: 120,
-          ),
-        ]),
-        Column(
-          children: [
-            Text(" Le $date à $hour"),
-            Text(event["name"]),
-            Container(
-                child: (event["date"].compareTo(DateTime.now()) < 0)
-                    ? const Text("Status : Terminé")
-                    : Text("Status : " + event["status"]))
-          ],
-        )
-      ],
+    return Container(
+      child: Row(
+        children: [
+          Column(children: [
+            Image.network(
+              event["image"],
+              height: 80,
+              width: 120,
+            ),
+          ]),
+          Column(
+            children: [
+              Text(" Le $date à $hour"),
+              Text(event["name"]),
+              Container(
+                  child: (event["date"].compareTo(DateTime.now()) < 0)
+                      ? const Text("Status : Terminé")
+                      : Text("Status : " + event["status"]))
+            ],
+          )
+        ],
+      ),
     );
   }
 }

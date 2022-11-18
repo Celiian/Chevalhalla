@@ -3,6 +3,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:chevalhalla/classes/user.dart';
 import 'package:chevalhalla/db/mongodb.dart';
+import 'package:chevalhalla/pages/party.dart';
 import 'package:chevalhalla/pages/planning.dart';
 import 'package:chevalhalla/widgets/timeline_cards.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     // Gère les "tap" sur la bottom nav pour rediriger entre les différentes pages
     setState(() {
       _currentIndex = index;
+
       if (_currentIndex == 0) {
         //Home page navigator
       } else if (_currentIndex == 1) {
@@ -82,15 +84,23 @@ class _HomePageState extends State<HomePage> {
         child: ListView.builder(
             itemCount: events.length,
             itemBuilder: (context, index) {
-              return Container(
-                margin:
-                    const EdgeInsets.only(left: 20.0, right: 20.0, top: 20.0),
-                height: 200,
-                child: cardList[index],
-              );
+              return GestureDetector(
+                  onTap: () {
+                    if (events[index]["info"]["event_type"] == "party") {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              PartyPage(event: events[index])));
+                    }
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                        left: 20.0, right: 20.0, top: 20.0),
+                    height: 200,
+                    child: cardList[index],
+                  ));
             }),
       ),
-
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
         currentIndex: _currentIndex, // new

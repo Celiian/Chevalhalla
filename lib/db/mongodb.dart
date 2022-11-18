@@ -74,8 +74,8 @@ class MongoDatabase {
     var cours = await collectionCours?.findOne(
         where.eq("creator", userId).eq("date", date).eq("hour", hour));
     // Ajoute l'utilisateur en tant que participant
-    collectionParticipations?.insertOne(
-        {"user": userId, "event": cours?["_id"], "type": "class"});
+    collectionParticipations
+        ?.insertOne({"user": userId, "event": cours?["_id"], "type": "class"});
   }
 
   createCompetition(userId, name, date, adress, image) async {
@@ -195,8 +195,7 @@ class MongoDatabase {
 
   getTimeline() async {
     /// Récupère tous les évenements existants triés par date
-    var participations =
-        await collectionParticipations?.find().toList();
+    var participations = await collectionParticipations?.find().toList();
 
     List events = [];
 
@@ -223,5 +222,17 @@ class MongoDatabase {
     events.sort((a, b) => a["date"].compareTo(b["date"]));
 
     return events;
+  }
+
+  checkParticipation(userId, eventId, type) async {
+    var x = await collectionParticipations?.findOne(
+        where.eq("user", userId).eq("event", eventId).eq("type", type));
+
+    if (x?["user"] == null){
+      return false;
+    }
+    else {
+      return true;
+    }
   }
 }

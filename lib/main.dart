@@ -7,6 +7,7 @@ import 'package:chevalhalla/pages/register.dart';
 import 'package:flutter/material.dart';
 import 'db/mongodb.dart';
 import 'pages/login.dart';
+import 'pages/party.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 
 Future<void> main() async {
@@ -43,6 +44,9 @@ class MyApp extends StatelessWidget {
         routes: {
           RegisterPage.tag: (context) => const RegisterPage(),
           HomePage.tag: (context) => const HomePage(),
+          Planning.tag: (context) => const Planning(),
+          PartyPage.tag: (context) => const PartyPage(event: null),
+
         },
       ),
     );
