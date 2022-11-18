@@ -17,9 +17,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Home',
-      routes:
-      {HomePage.tag: (context) => const HomePage(),
-        ProfilPage.tag: (context) => const ProfilPage(title: 'profil_page',),},
+      routes: {
+        HomePage.tag: (context) => const HomePage(),
+        ProfilPage.tag: (context) => const ProfilPage(title: 'profil_page')
+      },
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),

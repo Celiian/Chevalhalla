@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chevalhalla/pages/form.dart';
+import 'package:chevalhalla/pages/home.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../classes/user.dart';
@@ -24,7 +26,7 @@ class _ProfilState extends State<ProfilPage> {
     setState(() {
       _currentIndex = index;
       if (_currentIndex == 0) {
-        //Home page navigator
+        Navigator.of(context).pushNamed(HomePage.tag,).then((_) => setState(() {}));
       } else if (_currentIndex == 1) {
         //Planning page navigator
       } else if (_currentIndex == 2) {}
@@ -76,8 +78,10 @@ class _ProfilState extends State<ProfilPage> {
                                 onPressed: () {},
                               ),
                               TextButton(
-                                child: const Text("Deconnexion"),
-                                onPressed: () {},
+                                child: const Text("Déconnexion"),
+                                onPressed: () {
+                                  Navigator.of(context).popUntil((route) => route.isFirst);
+                                },
                               ),
                             ],
                           )
