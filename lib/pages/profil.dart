@@ -1,34 +1,55 @@
-import 'dart:convert';
-import 'dart:io';
+// ignore_for_file: prefer_interpolation_to_compose_strings
 
-import 'package:chevalhalla/pages/form.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:chevalhalla/pages/home.dart';
+import 'package:chevalhalla/pages/horse_dp.dart';
+import 'package:chevalhalla/pages/planning.dart';
+import 'package:chevalhalla/widgets/modal_horse.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../classes/user.dart';
-import '../mongodb.dart';
+import '../db/mongodb.dart';
 
 class ProfilPage extends StatefulWidget {
-  const ProfilPage({super.key, required this.title});
-
-  final String title;
-
   static const tag = "profil_page";
+
+  const ProfilPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _ProfilState();
 }
 
 class _ProfilState extends State<ProfilPage> {
-  int _currentIndex = 0;
+  int _currentIndex = 2;
+  List horses = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getHorses();
+  }
+
+
+  getHorses() async {
+    horses = await MongoDatabase().getHorses(User.id);
+    setState(() {});
+  }
 
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
       if (_currentIndex == 0) {
-        Navigator.of(context).pushNamed(HomePage.tag,).then((_) => setState(() {}));
+        Navigator.of(context)
+            .pushNamed(
+              HomePage.tag,
+            )
+            .then((_) => setState(() {}));
       } else if (_currentIndex == 1) {
-        //Planning page navigator
+        Navigator.of(context)
+            .pushNamed(
+              Planning.tag,
+            )
+            .then((_) => setState(() {}));
       } else if (_currentIndex == 2) {}
     });
   }
@@ -40,9 +61,17 @@ class _ProfilState extends State<ProfilPage> {
     var nameController = TextEditingController();
     var ownerController = TextEditingController();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Form page"),
-      ),
+      appBar: AppBar(title: const Text("Chelavkyries"), actions: <Widget>[
+        IconButton(
+          icon: const Icon(
+            Icons.lightbulb_sharp,
+          ),
+          tooltip: 'Changer de thème',
+          onPressed: () {
+            AdaptiveTheme.of(context).toggleThemeMode();
+          },
+        ),
+      ]),
       body: Center(
         child: Column(
           children: [
@@ -80,7 +109,8 @@ class _ProfilState extends State<ProfilPage> {
                               TextButton(
                                 child: const Text("Déconnexion"),
                                 onPressed: () {
-                                  Navigator.of(context).popUntil((route) => route.isFirst);
+                                  Navigator.of(context)
+                                      .popUntil((route) => route.isFirst);
                                 },
                               ),
                             ],
@@ -110,66 +140,48 @@ class _ProfilState extends State<ProfilPage> {
                           children: [
                             TextButton(
                               child: const Text("Inscrire un chevalkyrie"),
-                              onPressed: () {},
+                              onPressed: () {
+                                ModalHorse().CreateHorse(context);
+                                setState(() {});
+                              },
                             ),
                             TextButton(
                               child: const Text("Choisir un chevalkyrie"),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pushNamed(
+                                  HorseDpPage.tag,
+                                    )
+                                    .then((_) => setState(() {}));
+                                setState(() {});
+                              },
                             ),
                           ]),
-                      SizedBox(
-                        height: 200,
-                        child: FutureBuilder(
-                            future: MongoDatabase().getHorses(User.mail),
-                            builder: (buildContext, AsyncSnapshot snapshot) {
-                              if (snapshot.hasError) {
-                                throw const Center(
-                                  child: Text("Waiting..."),
-                                );
-                              } else if (!snapshot.hasData) {
-                                return const Center(
-                                  child: Text("Waiting..."),
-                                );
-                              } else {
-                                return ListView.builder(
-                                    itemCount: snapshot.data.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10),
-                                        child: Row(
-
-                                          children: <Widget>[
-                                        Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 40),
-                                            child:
-                                            CircleAvatar(
-                                                radius: 30,
-                                                backgroundImage: NetworkImage(
-                                                    snapshot.data[index]
-                                                        ['profilePicture'],
-                                                    scale: 30))),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                    'Nom : ${snapshot.data[index]['name']}'),
-                                                Text(
-                                                    'Race : ${snapshot.data[index]['race']}'),
-                                                Text(
-                                                    'Sexe : ${snapshot.data[index]['gender']}'),
-                                                Text(
-                                                    'Spécialité : ${snapshot.data[index]['speciality']}'),
-                                              ],
-                                            ),
-                                          ]));
-                                    });
-                              }
-                            }),
-                      )
+                      Container(
+                        height: 400,
+                        child: ListView.builder(
+                          itemCount: horses.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 12.0,
+                                vertical: 4.0,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border.all(),
+                              ),
+                              child: ListTile(
+                                onTap: () => print(horses[index]),
+                                title: Text("Nom : " +
+                                    horses[index]["name"] +
+                                    " | breed : " +
+                                    horses[index]["breed"] +
+                                    " - Vous en êtes propriétaire"),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ))
